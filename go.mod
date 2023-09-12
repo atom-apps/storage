@@ -5,7 +5,8 @@ go 1.19
 require (
 	github.com/atom-providers/database-mysql v0.0.0-20230801062833-f884a0ac6f21
 	github.com/atom-providers/faker v0.0.0-20230801062847-1ecbe384fc34
-	github.com/atom-providers/log v0.0.0-20230801062917-0782ea50f3c5
+	github.com/atom-providers/jwt v0.0.0-20230906104831-c1185cd2831a
+	github.com/atom-providers/log v0.0.0-20230805054420-343ad809890e
 	github.com/atom-providers/service-http v0.0.0-20230811021646-9685461114d2
 	github.com/go-gormigrate/gormigrate/v2 v2.1.0
 	github.com/gofiber/fiber/v2 v2.48.0
@@ -29,6 +30,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
@@ -55,14 +57,14 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.48.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/dig v1.17.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.24.0 // indirect
-	golang.org/x/exp v0.0.0-20230728194245-b0cb94b80691 // indirect
+	go.uber.org/zap v1.25.0 // indirect
+	golang.org/x/exp v0.0.0-20230801115018-d63ba01acd4b // indirect
 	golang.org/x/mod v0.11.0 // indirect
-	golang.org/x/sys v0.10.0 // indirect
-	golang.org/x/text v0.11.0 // indirect
+	golang.org/x/sync v0.3.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/text v0.12.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

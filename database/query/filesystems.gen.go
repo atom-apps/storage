@@ -33,15 +33,15 @@ func newFilesystem(db *gorm.DB, opts ...gen.DOOption) filesystem {
 	_filesystem.DeletedAt = field.NewField(tableName, "deleted_at")
 	_filesystem.TenantID = field.NewUint64(tableName, "tenant_id")
 	_filesystem.UserID = field.NewUint64(tableName, "user_id")
-	_filesystem.Driver = field.NewString(tableName, "driver")
+	_filesystem.DriverID = field.NewUint64(tableName, "driver_id")
 	_filesystem.Filename = field.NewString(tableName, "filename")
-	_filesystem.Type = field.NewString(tableName, "type")
+	_filesystem.Type = field.NewField(tableName, "type")
 	_filesystem.ParentID = field.NewUint64(tableName, "parent_id")
-	_filesystem.Status = field.NewString(tableName, "status")
+	_filesystem.Status = field.NewField(tableName, "status")
 	_filesystem.Mime = field.NewString(tableName, "mime")
 	_filesystem.Ext = field.NewString(tableName, "ext")
 	_filesystem.ShareUUID = field.NewString(tableName, "share_uuid")
-	_filesystem.Metadata = field.NewBytes(tableName, "metadata")
+	_filesystem.Metadata = field.NewField(tableName, "metadata")
 
 	_filesystem.fillFieldMap()
 
@@ -58,15 +58,15 @@ type filesystem struct {
 	DeletedAt field.Field  // 删除时间
 	TenantID  field.Uint64 // 租户ID
 	UserID    field.Uint64 // 用户ID
-	Driver    field.String // 驱动
+	DriverID  field.Uint64 // 驱动
 	Filename  field.String // 文件名
-	Type      field.String // 类型
+	Type      field.Field  // 类型
 	ParentID  field.Uint64 // 父级ID
-	Status    field.String // 状态
+	Status    field.Field  // 状态
 	Mime      field.String // MIME
 	Ext       field.String // 后缀名
 	ShareUUID field.String // 共享ID
-	Metadata  field.Bytes  // 元数据
+	Metadata  field.Field  // 元数据
 
 	fieldMap map[string]field.Expr
 }
@@ -89,15 +89,15 @@ func (f *filesystem) updateTableName(table string) *filesystem {
 	f.DeletedAt = field.NewField(table, "deleted_at")
 	f.TenantID = field.NewUint64(table, "tenant_id")
 	f.UserID = field.NewUint64(table, "user_id")
-	f.Driver = field.NewString(table, "driver")
+	f.DriverID = field.NewUint64(table, "driver_id")
 	f.Filename = field.NewString(table, "filename")
-	f.Type = field.NewString(table, "type")
+	f.Type = field.NewField(table, "type")
 	f.ParentID = field.NewUint64(table, "parent_id")
-	f.Status = field.NewString(table, "status")
+	f.Status = field.NewField(table, "status")
 	f.Mime = field.NewString(table, "mime")
 	f.Ext = field.NewString(table, "ext")
 	f.ShareUUID = field.NewString(table, "share_uuid")
-	f.Metadata = field.NewBytes(table, "metadata")
+	f.Metadata = field.NewField(table, "metadata")
 
 	f.fillFieldMap()
 
@@ -131,7 +131,7 @@ func (f *filesystem) fillFieldMap() {
 	f.fieldMap["deleted_at"] = f.DeletedAt
 	f.fieldMap["tenant_id"] = f.TenantID
 	f.fieldMap["user_id"] = f.UserID
-	f.fieldMap["driver"] = f.Driver
+	f.fieldMap["driver_id"] = f.DriverID
 	f.fieldMap["filename"] = f.Filename
 	f.fieldMap["type"] = f.Type
 	f.fieldMap["parent_id"] = f.ParentID

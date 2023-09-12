@@ -11,8 +11,7 @@ func (m *Migration20230912_104027CreateFilesystem) table() interface{} {
 	type Filesystem struct {
 		Model
 		ModelWithUser
-
-		Driver    consts.FilesystemDriver   `gorm:"size:36;not null;comment:驱动"`
+		DriverID  uint                      `gorm:"comment:驱动"`
 		Filename  string                    `gorm:"size:128;not null;index:idx_filename;comment:文件名"`
 		Type      consts.Filesystem         `gorm:"size:12;not null;comment:类型"`
 		ParentID  uint                      `gorm:"comment:父级ID"`

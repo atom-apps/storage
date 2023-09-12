@@ -17,10 +17,21 @@ type FilesystemService struct {
 }
 
 func (svc *FilesystemService) DecorateItem(model *models.Filesystem, id int) *dto.FilesystemItem {
-	var dtoItem *dto.FilesystemItem
-	_ = copier.Copy(dtoItem, model)
-
-	return dtoItem
+	return &dto.FilesystemItem{
+		ID:        model.ID,
+		CreatedAt: model.CreatedAt,
+		UpdatedAt: model.UpdatedAt,
+		TenantID:  model.TenantID,
+		UserID:    model.UserID,
+		DriverID:  model.DriverID,
+		Filename:  model.Filename,
+		Type:      model.Type,
+		ParentID:  model.ParentID,
+		Status:    model.Status,
+		Mime:      model.Mime,
+		ShareUUID: model.ShareUUID,
+		Metadata:  model.Metadata,
+	}
 }
 
 func (svc *FilesystemService) GetByID(ctx context.Context, id uint64) (*models.Filesystem, error) {

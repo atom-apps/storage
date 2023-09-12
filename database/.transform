@@ -1,0 +1,5 @@
+drivers.options => common.Options
+
+filesystems.metadata => common.FilesystemMetadata
+filesystems.type => consts.Filesystem
+filesystems.status => consts.FileStatus

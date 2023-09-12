@@ -31,12 +31,13 @@ func newDriver(db *gorm.DB, opts ...gen.DOOption) driver {
 	_driver.CreatedAt = field.NewTime(tableName, "created_at")
 	_driver.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_driver.DeletedAt = field.NewField(tableName, "deleted_at")
+	_driver.Type = field.NewString(tableName, "type")
 	_driver.Name = field.NewString(tableName, "name")
 	_driver.Endpoint = field.NewString(tableName, "endpoint")
 	_driver.AccessKey = field.NewString(tableName, "access_key")
 	_driver.AccessSecret = field.NewString(tableName, "access_secret")
 	_driver.Bucket = field.NewString(tableName, "bucket")
-	_driver.Options = field.NewBytes(tableName, "options")
+	_driver.Options = field.NewField(tableName, "options")
 
 	_driver.fillFieldMap()
 
@@ -51,12 +52,13 @@ type driver struct {
 	CreatedAt    field.Time   // 创建时间
 	UpdatedAt    field.Time   // 更新时间
 	DeletedAt    field.Field  // 删除时间
+	Type         field.String // 类型
 	Name         field.String // 名称
 	Endpoint     field.String // 地址
 	AccessKey    field.String // AccessKey
 	AccessSecret field.String // AccessSecret
 	Bucket       field.String // Bucket
-	Options      field.Bytes  // 配置
+	Options      field.Field  // 配置
 
 	fieldMap map[string]field.Expr
 }
@@ -77,12 +79,13 @@ func (d *driver) updateTableName(table string) *driver {
 	d.CreatedAt = field.NewTime(table, "created_at")
 	d.UpdatedAt = field.NewTime(table, "updated_at")
 	d.DeletedAt = field.NewField(table, "deleted_at")
+	d.Type = field.NewString(table, "type")
 	d.Name = field.NewString(table, "name")
 	d.Endpoint = field.NewString(table, "endpoint")
 	d.AccessKey = field.NewString(table, "access_key")
 	d.AccessSecret = field.NewString(table, "access_secret")
 	d.Bucket = field.NewString(table, "bucket")
-	d.Options = field.NewBytes(table, "options")
+	d.Options = field.NewField(table, "options")
 
 	d.fillFieldMap()
 
@@ -107,11 +110,12 @@ func (d *driver) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (d *driver) fillFieldMap() {
-	d.fieldMap = make(map[string]field.Expr, 10)
+	d.fieldMap = make(map[string]field.Expr, 11)
 	d.fieldMap["id"] = d.ID
 	d.fieldMap["created_at"] = d.CreatedAt
 	d.fieldMap["updated_at"] = d.UpdatedAt
 	d.fieldMap["deleted_at"] = d.DeletedAt
+	d.fieldMap["type"] = d.Type
 	d.fieldMap["name"] = d.Name
 	d.fieldMap["endpoint"] = d.Endpoint
 	d.fieldMap["access_key"] = d.AccessKey

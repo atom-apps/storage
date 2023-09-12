@@ -7,6 +7,8 @@ package models
 import (
 	"time"
 
+	"github.com/atom-apps/storage/common"
+	"github.com/atom-apps/storage/common/consts"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
@@ -15,21 +17,21 @@ const TableNameFilesystem = "filesystems"
 
 // Filesystem mapped from table <filesystems>
 type Filesystem struct {
-	ID        uint64         `gorm:"column:id;type:bigint unsigned;primaryKey;autoIncrement:true;comment:ID" json:"id"`      // ID
-	CreatedAt time.Time      `gorm:"column:created_at;type:datetime(3);comment:创建时间" json:"created_at"`                      // 创建时间
-	UpdatedAt time.Time      `gorm:"column:updated_at;type:datetime(3);comment:更新时间" json:"updated_at"`                      // 更新时间
-	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;type:datetime(3);comment:删除时间" json:"deleted_at" swaggertype:"string"` // 删除时间
-	TenantID  uint64         `gorm:"column:tenant_id;type:bigint unsigned;comment:租户ID" json:"tenant_id"`                    // 租户ID
-	UserID    uint64         `gorm:"column:user_id;type:bigint unsigned;comment:用户ID" json:"user_id"`                        // 用户ID
-	Driver    string         `gorm:"column:driver;type:varchar(36);not null;comment:驱动" json:"driver"`                       // 驱动
-	Filename  string         `gorm:"column:filename;type:varchar(128);not null;comment:文件名" json:"filename"`                 // 文件名
-	Type      string         `gorm:"column:type;type:varchar(12);not null;comment:类型" json:"type"`                           // 类型
-	ParentID  uint64         `gorm:"column:parent_id;type:bigint unsigned;comment:父级ID" json:"parent_id"`                    // 父级ID
-	Status    string         `gorm:"column:status;type:varchar(191);comment:状态" json:"status"`                               // 状态
-	Mime      string         `gorm:"column:mime;type:varchar(128);comment:MIME" json:"mime"`                                 // MIME
-	Ext       string         `gorm:"column:ext;type:varchar(32);comment:后缀名" json:"ext"`                                     // 后缀名
-	ShareUUID string         `gorm:"column:share_uuid;type:varchar(64);comment:共享ID" json:"share_uuid"`                      // 共享ID
-	Metadata  []byte         `gorm:"column:metadata;type:longblob;comment:元数据" json:"metadata"`                              // 元数据
+	ID        uint64                    `gorm:"column:id;type:bigint unsigned;primaryKey;autoIncrement:true;comment:ID" json:"id"`      // ID
+	CreatedAt time.Time                 `gorm:"column:created_at;type:datetime(3);comment:创建时间" json:"created_at"`                      // 创建时间
+	UpdatedAt time.Time                 `gorm:"column:updated_at;type:datetime(3);comment:更新时间" json:"updated_at"`                      // 更新时间
+	DeletedAt gorm.DeletedAt            `gorm:"column:deleted_at;type:datetime(3);comment:删除时间" json:"deleted_at" swaggertype:"string"` // 删除时间
+	TenantID  uint64                    `gorm:"column:tenant_id;type:bigint unsigned;comment:租户ID" json:"tenant_id"`                    // 租户ID
+	UserID    uint64                    `gorm:"column:user_id;type:bigint unsigned;comment:用户ID" json:"user_id"`                        // 用户ID
+	DriverID  uint64                    `gorm:"column:driver_id;type:bigint unsigned;comment:驱动" json:"driver_id"`                      // 驱动
+	Filename  string                    `gorm:"column:filename;type:varchar(128);not null;comment:文件名" json:"filename"`                 // 文件名
+	Type      consts.Filesystem         `gorm:"column:type;type:varchar(12);not null;comment:类型" json:"type"`                           // 类型
+	ParentID  uint64                    `gorm:"column:parent_id;type:bigint unsigned;comment:父级ID" json:"parent_id"`                    // 父级ID
+	Status    consts.FileStatus         `gorm:"column:status;type:varchar(191);comment:状态" json:"status"`                               // 状态
+	Mime      string                    `gorm:"column:mime;type:varchar(128);comment:MIME" json:"mime"`                                 // MIME
+	Ext       string                    `gorm:"column:ext;type:varchar(32);comment:后缀名" json:"ext"`                                     // 后缀名
+	ShareUUID string                    `gorm:"column:share_uuid;type:varchar(64);comment:共享ID" json:"share_uuid"`                      // 共享ID
+	Metadata  common.FilesystemMetadata `gorm:"column:metadata;type:longblob;comment:元数据" json:"metadata"`                              // 元数据
 }
 
 func (*Filesystem) TableName(namer schema.Namer) string {

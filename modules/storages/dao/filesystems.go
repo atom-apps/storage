@@ -55,8 +55,8 @@ func (dao *FilesystemDao) decorateQueryFilter(query query.IFilesystemDo, queryFi
 	if queryFilter.UserID != nil {
 		query = query.Where(dao.query.Filesystem.UserID.Eq(*queryFilter.UserID))
 	}
-	if queryFilter.Driver != nil {
-		query = query.Where(dao.query.Filesystem.Driver.Eq(*queryFilter.Driver))
+	if queryFilter.DriverID != nil {
+		query = query.Where(dao.query.Filesystem.DriverID.Eq(*queryFilter.DriverID))
 	}
 	if queryFilter.Filename != nil {
 		query = query.Where(dao.query.Filesystem.Filename.Eq(*queryFilter.Filename))

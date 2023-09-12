@@ -17,10 +17,22 @@ type DriverService struct {
 }
 
 func (svc *DriverService) DecorateItem(model *models.Driver, id int) *dto.DriverItem {
-	var dtoItem *dto.DriverItem
-	_ = copier.Copy(dtoItem, model)
+	return &dto.DriverItem{
+		ID:           model.ID,
+		Name:         model.Name,
+		Endpoint:     model.Endpoint,
+		AccessKey:    model.AccessKey,
+		AccessSecret: svc.HideSecret(model.AccessSecret),
+		Bucket:       model.Bucket,
+		Options:      model.Options,
+	}
+}
 
-	return dtoItem
+func (svc *DriverService) HideSecret(secret string) string {
+	if len(secret) < 3 {
+		return "***"
+	}
+	return secret[0:len(secret)-3] + "***"
 }
 
 func (svc *DriverService) GetByID(ctx context.Context, id uint64) (*models.Driver, error) {

@@ -7,8 +7,10 @@ import (
 	"log"
 
 	"github.com/atom-apps/storage/database/query"
+	"github.com/atom-apps/storage/modules/boot"
 	moduleStorage "github.com/atom-apps/storage/modules/storages"
 	database "github.com/atom-providers/database-mysql"
+	"github.com/atom-providers/jwt"
 	serviceHttp "github.com/atom-providers/service-http"
 
 	"github.com/rogeecn/atom"
@@ -17,10 +19,12 @@ import (
 func main() {
 	providers := serviceHttp.
 		Default(
+			jwt.DefaultProvider(),
 			query.DefaultProvider(),
 			database.DefaultProvider(),
 		).
 		With(
+			boot.Providers(),
 			moduleStorage.Providers(),
 		)
 

@@ -7,12 +7,12 @@ import (
 )
 
 type DriverForm struct {
-	Name         string         `form:"name" json:"name,omitempty"`                   // 名称
-	Endpoint     string         `form:"endpoint" json:"endpoint,omitempty"`           // 地址
-	AccessKey    string         `form:"access_key" json:"access_key,omitempty"`       // AccessKey
-	AccessSecret string         `form:"access_secret" json:"access_secret,omitempty"` // AccessSecret
-	Bucket       string         `form:"bucket" json:"bucket,omitempty"`               // Bucket
-	Options      common.Options `form:"options" json:"options,omitempty"`             // 配置
+	Name         string          `form:"name" json:"name,omitempty"`                   // 名称
+	Endpoint     string          `form:"endpoint" json:"endpoint,omitempty"`           // 地址
+	AccessKey    string          `form:"access_key" json:"access_key,omitempty"`       // AccessKey
+	AccessSecret string          `form:"access_secret" json:"access_secret,omitempty"` // AccessSecret
+	Bucket       string          `form:"bucket" json:"bucket,omitempty"`               // Bucket
+	Options      *common.Options `form:"options" json:"options,omitempty"`             // 配置
 }
 
 type DriverListQueryFilter struct {

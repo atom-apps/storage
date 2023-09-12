@@ -5,7 +5,7 @@ package consts
 type Filesystem string
 
 // swagger:enum FileStatus
-// ENUM(normal, uploading)
+// ENUM(normal="", uploading="u")
 type FileStatus string
 
 // swagger:enum FilesystemDriver

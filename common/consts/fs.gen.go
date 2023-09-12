@@ -14,6 +14,166 @@ import (
 )
 
 const (
+	// FileStatusNormal is a FileStatus of type normal.
+	FileStatusNormal FileStatus = ""
+	// FileStatusUploading is a FileStatus of type uploading.
+	FileStatusUploading FileStatus = "u"
+)
+
+var ErrInvalidFileStatus = fmt.Errorf("not a valid FileStatus, try [%s]", strings.Join(_FileStatusNames, ", "))
+
+var _FileStatusNames = []string{
+	string(FileStatusNormal),
+	string(FileStatusUploading),
+}
+
+// FileStatusNames returns a list of possible string values of FileStatus.
+func FileStatusNames() []string {
+	tmp := make([]string, len(_FileStatusNames))
+	copy(tmp, _FileStatusNames)
+	return tmp
+}
+
+// FileStatusValues returns a list of the values for FileStatus
+func FileStatusValues() []FileStatus {
+	return []FileStatus{
+		FileStatusNormal,
+		FileStatusUploading,
+	}
+}
+
+// String implements the Stringer interface.
+func (x FileStatus) String() string {
+	return string(x)
+}
+
+// IsValid provides a quick way to determine if the typed value is
+// part of the allowed enumerated values
+func (x FileStatus) IsValid() bool {
+	_, err := ParseFileStatus(string(x))
+	return err == nil
+}
+
+var _FileStatusValue = map[string]FileStatus{
+	"":  FileStatusNormal,
+	"u": FileStatusUploading,
+}
+
+// ParseFileStatus attempts to convert a string to a FileStatus.
+func ParseFileStatus(name string) (FileStatus, error) {
+	if x, ok := _FileStatusValue[name]; ok {
+		return x, nil
+	}
+	return FileStatus(""), fmt.Errorf("%s is %w", name, ErrInvalidFileStatus)
+}
+
+var errFileStatusNilPtr = errors.New("value pointer is nil") // one per type for package clashes
+
+// Scan implements the Scanner interface.
+func (x *FileStatus) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = FileStatus("")
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case string:
+		*x, err = ParseFileStatus(v)
+	case []byte:
+		*x, err = ParseFileStatus(string(v))
+	case FileStatus:
+		*x = v
+	case *FileStatus:
+		if v == nil {
+			return errFileStatusNilPtr
+		}
+		*x = *v
+	case *string:
+		if v == nil {
+			return errFileStatusNilPtr
+		}
+		*x, err = ParseFileStatus(*v)
+	default:
+		return errors.New("invalid type for FileStatus")
+	}
+
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x FileStatus) Value() (driver.Value, error) {
+	return x.String(), nil
+}
+
+// Set implements the Golang flag.Value interface func.
+func (x *FileStatus) Set(val string) error {
+	v, err := ParseFileStatus(val)
+	*x = v
+	return err
+}
+
+// Get implements the Golang flag.Getter interface func.
+func (x *FileStatus) Get() interface{} {
+	return *x
+}
+
+// Type implements the github.com/spf13/pFlag Value interface.
+func (x *FileStatus) Type() string {
+	return "FileStatus"
+}
+
+type NullFileStatus struct {
+	FileStatus FileStatus
+	Valid      bool
+}
+
+func NewNullFileStatus(val interface{}) (x NullFileStatus) {
+	err := x.Scan(val) // yes, we ignore this error, it will just be an invalid value.
+	_ = err            // make any errcheck linters happy
+	return
+}
+
+// Scan implements the Scanner interface.
+func (x *NullFileStatus) Scan(value interface{}) (err error) {
+	if value == nil {
+		x.FileStatus, x.Valid = FileStatus(""), false
+		return
+	}
+
+	err = x.FileStatus.Scan(value)
+	x.Valid = (err == nil)
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x NullFileStatus) Value() (driver.Value, error) {
+	if !x.Valid {
+		return nil, nil
+	}
+	// driver.Value accepts int64 for int values.
+	return string(x.FileStatus), nil
+}
+
+type NullFileStatusStr struct {
+	NullFileStatus
+}
+
+func NewNullFileStatusStr(val interface{}) (x NullFileStatusStr) {
+	x.Scan(val) // yes, we ignore this error, it will just be an invalid value.
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x NullFileStatusStr) Value() (driver.Value, error) {
+	if !x.Valid {
+		return nil, nil
+	}
+	return x.FileStatus.String(), nil
+}
+
+const (
 	// FilesystemFile is a Filesystem of type file.
 	FilesystemFile Filesystem = "file"
 	// FilesystemDir is a Filesystem of type dir.
@@ -171,4 +331,174 @@ func (x NullFilesystemStr) Value() (driver.Value, error) {
 		return nil, nil
 	}
 	return x.Filesystem.String(), nil
+}
+
+const (
+	// FilesystemDriverLocal is a FilesystemDriver of type local.
+	FilesystemDriverLocal FilesystemDriver = "local"
+	// FilesystemDriverAliyunOss is a FilesystemDriver of type aliyun_oss.
+	FilesystemDriverAliyunOss FilesystemDriver = "aliyun_oss"
+	// FilesystemDriverTencentOss is a FilesystemDriver of type tencent_oss.
+	FilesystemDriverTencentOss FilesystemDriver = "tencent_oss"
+	// FilesystemDriverHuaweiOss is a FilesystemDriver of type huawei_oss.
+	FilesystemDriverHuaweiOss FilesystemDriver = "huawei_oss"
+)
+
+var ErrInvalidFilesystemDriver = fmt.Errorf("not a valid FilesystemDriver, try [%s]", strings.Join(_FilesystemDriverNames, ", "))
+
+var _FilesystemDriverNames = []string{
+	string(FilesystemDriverLocal),
+	string(FilesystemDriverAliyunOss),
+	string(FilesystemDriverTencentOss),
+	string(FilesystemDriverHuaweiOss),
+}
+
+// FilesystemDriverNames returns a list of possible string values of FilesystemDriver.
+func FilesystemDriverNames() []string {
+	tmp := make([]string, len(_FilesystemDriverNames))
+	copy(tmp, _FilesystemDriverNames)
+	return tmp
+}
+
+// FilesystemDriverValues returns a list of the values for FilesystemDriver
+func FilesystemDriverValues() []FilesystemDriver {
+	return []FilesystemDriver{
+		FilesystemDriverLocal,
+		FilesystemDriverAliyunOss,
+		FilesystemDriverTencentOss,
+		FilesystemDriverHuaweiOss,
+	}
+}
+
+// String implements the Stringer interface.
+func (x FilesystemDriver) String() string {
+	return string(x)
+}
+
+// IsValid provides a quick way to determine if the typed value is
+// part of the allowed enumerated values
+func (x FilesystemDriver) IsValid() bool {
+	_, err := ParseFilesystemDriver(string(x))
+	return err == nil
+}
+
+var _FilesystemDriverValue = map[string]FilesystemDriver{
+	"local":       FilesystemDriverLocal,
+	"aliyun_oss":  FilesystemDriverAliyunOss,
+	"tencent_oss": FilesystemDriverTencentOss,
+	"huawei_oss":  FilesystemDriverHuaweiOss,
+}
+
+// ParseFilesystemDriver attempts to convert a string to a FilesystemDriver.
+func ParseFilesystemDriver(name string) (FilesystemDriver, error) {
+	if x, ok := _FilesystemDriverValue[name]; ok {
+		return x, nil
+	}
+	return FilesystemDriver(""), fmt.Errorf("%s is %w", name, ErrInvalidFilesystemDriver)
+}
+
+var errFilesystemDriverNilPtr = errors.New("value pointer is nil") // one per type for package clashes
+
+// Scan implements the Scanner interface.
+func (x *FilesystemDriver) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = FilesystemDriver("")
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case string:
+		*x, err = ParseFilesystemDriver(v)
+	case []byte:
+		*x, err = ParseFilesystemDriver(string(v))
+	case FilesystemDriver:
+		*x = v
+	case *FilesystemDriver:
+		if v == nil {
+			return errFilesystemDriverNilPtr
+		}
+		*x = *v
+	case *string:
+		if v == nil {
+			return errFilesystemDriverNilPtr
+		}
+		*x, err = ParseFilesystemDriver(*v)
+	default:
+		return errors.New("invalid type for FilesystemDriver")
+	}
+
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x FilesystemDriver) Value() (driver.Value, error) {
+	return x.String(), nil
+}
+
+// Set implements the Golang flag.Value interface func.
+func (x *FilesystemDriver) Set(val string) error {
+	v, err := ParseFilesystemDriver(val)
+	*x = v
+	return err
+}
+
+// Get implements the Golang flag.Getter interface func.
+func (x *FilesystemDriver) Get() interface{} {
+	return *x
+}
+
+// Type implements the github.com/spf13/pFlag Value interface.
+func (x *FilesystemDriver) Type() string {
+	return "FilesystemDriver"
+}
+
+type NullFilesystemDriver struct {
+	FilesystemDriver FilesystemDriver
+	Valid            bool
+}
+
+func NewNullFilesystemDriver(val interface{}) (x NullFilesystemDriver) {
+	err := x.Scan(val) // yes, we ignore this error, it will just be an invalid value.
+	_ = err            // make any errcheck linters happy
+	return
+}
+
+// Scan implements the Scanner interface.
+func (x *NullFilesystemDriver) Scan(value interface{}) (err error) {
+	if value == nil {
+		x.FilesystemDriver, x.Valid = FilesystemDriver(""), false
+		return
+	}
+
+	err = x.FilesystemDriver.Scan(value)
+	x.Valid = (err == nil)
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x NullFilesystemDriver) Value() (driver.Value, error) {
+	if !x.Valid {
+		return nil, nil
+	}
+	// driver.Value accepts int64 for int values.
+	return string(x.FilesystemDriver), nil
+}
+
+type NullFilesystemDriverStr struct {
+	NullFilesystemDriver
+}
+
+func NewNullFilesystemDriverStr(val interface{}) (x NullFilesystemDriverStr) {
+	x.Scan(val) // yes, we ignore this error, it will just be an invalid value.
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x NullFilesystemDriverStr) Value() (driver.Value, error) {
+	if !x.Valid {
+		return nil, nil
+	}
+	return x.FilesystemDriver.String(), nil
 }

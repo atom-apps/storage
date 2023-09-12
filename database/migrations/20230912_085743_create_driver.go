@@ -2,6 +2,7 @@ package migrations
 
 import (
 	"github.com/atom-apps/storage/common"
+	"github.com/atom-apps/storage/common/consts"
 	"github.com/rogeecn/atom/contracts"
 	"gorm.io/gorm"
 )
@@ -9,12 +10,13 @@ import (
 func (m *Migration20230912_085743CreateDriver) table() interface{} {
 	type Driver struct {
 		Model
-		Name         string         `gorm:"size:128;not null;uniqueIndex:idx_name;comment:名称"`
-		Endpoint     string         `gorm:"size:198;not null;comment:地址"`
-		AccessKey    string         `gorm:"size:128;not null;comment:AccessKey"`
-		AccessSecret string         `gorm:"size:128;not null;comment:AccessSecret"`
-		Bucket       string         `gorm:"size:128;not null;comment:Bucket"`
-		Options      common.Options `gorm:"comment:配置"`
+		Type         consts.FilesystemDriver `gorm:"size:64;not null;comment:类型"`
+		Name         string                  `gorm:"size:128;not null;uniqueIndex:idx_name;comment:名称"`
+		Endpoint     string                  `gorm:"size:198;not null;comment:地址"`
+		AccessKey    string                  `gorm:"size:128;not null;comment:AccessKey"`
+		AccessSecret string                  `gorm:"size:128;not null;comment:AccessSecret"`
+		Bucket       string                  `gorm:"size:128;not null;comment:Bucket"`
+		Options      common.Options          `gorm:"comment:配置"`
 	}
 
 	return &Driver{}
