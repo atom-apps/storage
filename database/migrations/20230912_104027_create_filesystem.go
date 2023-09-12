@@ -18,6 +18,8 @@ func (m *Migration20230912_104027CreateFilesystem) table() interface{} {
 		Status    consts.FileStatus         `gorm:"comment:状态"`
 		Mime      string                    `gorm:"size:128;index:idx_mime;comment:MIME"`
 		Ext       string                    `gorm:"size:32;index:idx_ext;comment:后缀名"`
+		Size      uint                      `gorm:"comment:文件大小"`
+		Md5       string                    `gorm:"size:32;comment:MD5"`
 		ShareUUID string                    `gorm:"size:64;comment:共享ID"`
 		Metadata  common.FilesystemMetadata `gorm:"comment:元数据"`
 	}
