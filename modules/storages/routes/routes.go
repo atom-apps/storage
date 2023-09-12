@@ -16,7 +16,7 @@ func Provide(opts ...opt.Option) error {
 
 func newRoute(svc contracts.HttpService, filesystemController *controller.FilesystemController, driverController *controller.DriverController) contracts.HttpRoute {
 	engine := svc.GetEngine().(*fiber.App)
-	group := engine.Group("medias")
+	group := engine.Group("v1/storages")
 	log.Infof("register route group: %s", group.(*fiber.Group).Prefix)
 
 	routeDriverController(group, driverController)

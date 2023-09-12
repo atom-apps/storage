@@ -39,6 +39,7 @@ func newFilesystem(db *gorm.DB, opts ...gen.DOOption) filesystem {
 	_filesystem.ParentID = field.NewUint64(tableName, "parent_id")
 	_filesystem.Status = field.NewString(tableName, "status")
 	_filesystem.Mime = field.NewString(tableName, "mime")
+	_filesystem.Ext = field.NewString(tableName, "ext")
 	_filesystem.ShareUUID = field.NewString(tableName, "share_uuid")
 	_filesystem.Metadata = field.NewBytes(tableName, "metadata")
 
@@ -63,6 +64,7 @@ type filesystem struct {
 	ParentID  field.Uint64 // 父级ID
 	Status    field.String // 状态
 	Mime      field.String // MIME
+	Ext       field.String // 后缀名
 	ShareUUID field.String // 共享ID
 	Metadata  field.Bytes  // 元数据
 
@@ -93,6 +95,7 @@ func (f *filesystem) updateTableName(table string) *filesystem {
 	f.ParentID = field.NewUint64(table, "parent_id")
 	f.Status = field.NewString(table, "status")
 	f.Mime = field.NewString(table, "mime")
+	f.Ext = field.NewString(table, "ext")
 	f.ShareUUID = field.NewString(table, "share_uuid")
 	f.Metadata = field.NewBytes(table, "metadata")
 
@@ -121,7 +124,7 @@ func (f *filesystem) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (f *filesystem) fillFieldMap() {
-	f.fieldMap = make(map[string]field.Expr, 14)
+	f.fieldMap = make(map[string]field.Expr, 15)
 	f.fieldMap["id"] = f.ID
 	f.fieldMap["created_at"] = f.CreatedAt
 	f.fieldMap["updated_at"] = f.UpdatedAt
@@ -134,6 +137,7 @@ func (f *filesystem) fillFieldMap() {
 	f.fieldMap["parent_id"] = f.ParentID
 	f.fieldMap["status"] = f.Status
 	f.fieldMap["mime"] = f.Mime
+	f.fieldMap["ext"] = f.Ext
 	f.fieldMap["share_uuid"] = f.ShareUUID
 	f.fieldMap["metadata"] = f.Metadata
 }

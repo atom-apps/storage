@@ -14,7 +14,7 @@ import (
 )
 
 func routeDriverController(engine fiber.Router, controller *controller.DriverController) {
-	basePath := "/"+engine.(*fiber.Group).Prefix
+	basePath := "/"+strings.Trim(engine.(*fiber.Group).Prefix,"/")
 	engine.Get(strings.TrimPrefix("/v1/storages/drivers/:id<int>", basePath), DataFunc1(controller.Show, Integer[uint64]("id", PathParamError)))
 	engine.Get(strings.TrimPrefix("/v1/storages/drivers", basePath), DataFunc3(controller.List, Query[dto.DriverListQueryFilter](QueryParamError), Query[common.PageQueryFilter](QueryParamError), Query[common.SortQueryFilter](QueryParamError)))
 	engine.Post(strings.TrimPrefix("/v1/storages/drivers", basePath), Func1(controller.Create, Body[dto.DriverForm](BodyParamError)))

@@ -6,6 +6,7 @@ package main
 import (
 	"log"
 
+	"github.com/atom-apps/storage/database/query"
 	moduleStorage "github.com/atom-apps/storage/modules/storages"
 	database "github.com/atom-providers/database-mysql"
 	serviceHttp "github.com/atom-providers/service-http"
@@ -16,6 +17,7 @@ import (
 func main() {
 	providers := serviceHttp.
 		Default(
+			query.DefaultProvider(),
 			database.DefaultProvider(),
 		).
 		With(

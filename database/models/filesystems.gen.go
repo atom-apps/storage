@@ -27,6 +27,7 @@ type Filesystem struct {
 	ParentID  uint64         `gorm:"column:parent_id;type:bigint unsigned;comment:父级ID" json:"parent_id"`                    // 父级ID
 	Status    string         `gorm:"column:status;type:varchar(191);comment:状态" json:"status"`                               // 状态
 	Mime      string         `gorm:"column:mime;type:varchar(128);comment:MIME" json:"mime"`                                 // MIME
+	Ext       string         `gorm:"column:ext;type:varchar(32);comment:后缀名" json:"ext"`                                     // 后缀名
 	ShareUUID string         `gorm:"column:share_uuid;type:varchar(64);comment:共享ID" json:"share_uuid"`                      // 共享ID
 	Metadata  []byte         `gorm:"column:metadata;type:longblob;comment:元数据" json:"metadata"`                              // 元数据
 }
