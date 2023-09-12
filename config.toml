@@ -1,0 +1,31 @@
+[Http]
+Port = 9800
+
+[Redis]
+Addresses = ["localhost:6379"]
+Password = ""
+DB = 0
+# [Redis]
+# Addresses = ["localhost:6379"]
+# Password = ""
+# DB = 0
+
+[MySQL]
+Username = "root"
+Password = "admin"
+Database = "atom_storage"
+Host = "localhost"
+Port = 3306
+# [MySQL]
+# Username = "root"
+# Password = "admin"
+# Database = "atom_storage"
+# Host = "localhost"
+# Port = 3306
+
+[Swagger]
+BaseRoute = "doc"
+Title = "Api"
+Description = "Api Docs"
+BasePath= "/v1"
+Version = "1.0.0"
