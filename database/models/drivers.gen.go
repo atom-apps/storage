@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/atom-apps/storage/common"
+	"github.com/atom-apps/storage/common/consts"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
@@ -16,17 +17,18 @@ const TableNameDriver = "drivers"
 
 // Driver mapped from table <drivers>
 type Driver struct {
-	ID           uint64         `gorm:"column:id;type:bigint unsigned;primaryKey;autoIncrement:true;comment:ID" json:"id"`         // ID
-	CreatedAt    time.Time      `gorm:"column:created_at;type:datetime(3);comment:创建时间" json:"created_at"`                         // 创建时间
-	UpdatedAt    time.Time      `gorm:"column:updated_at;type:datetime(3);comment:更新时间" json:"updated_at"`                         // 更新时间
-	DeletedAt    gorm.DeletedAt `gorm:"column:deleted_at;type:datetime(3);comment:删除时间" json:"deleted_at" swaggertype:"string"`    // 删除时间
-	Type         string         `gorm:"column:type;type:varchar(64);not null;comment:类型" json:"type"`                              // 类型
-	Name         string         `gorm:"column:name;type:varchar(128);not null;comment:名称" json:"name"`                             // 名称
-	Endpoint     string         `gorm:"column:endpoint;type:varchar(198);not null;comment:地址" json:"endpoint"`                     // 地址
-	AccessKey    string         `gorm:"column:access_key;type:varchar(128);not null;comment:AccessKey" json:"access_key"`          // AccessKey
-	AccessSecret string         `gorm:"column:access_secret;type:varchar(128);not null;comment:AccessSecret" json:"access_secret"` // AccessSecret
-	Bucket       string         `gorm:"column:bucket;type:varchar(128);not null;comment:Bucket" json:"bucket"`                     // Bucket
-	Options      common.Options `gorm:"column:options;type:longblob;comment:配置" json:"options"`                                    // 配置
+	ID           uint64                  `gorm:"column:id;type:bigint unsigned;primaryKey;autoIncrement:true;comment:ID" json:"id"`         // ID
+	CreatedAt    time.Time               `gorm:"column:created_at;type:datetime(3);comment:创建时间" json:"created_at"`                         // 创建时间
+	UpdatedAt    time.Time               `gorm:"column:updated_at;type:datetime(3);comment:更新时间" json:"updated_at"`                         // 更新时间
+	DeletedAt    gorm.DeletedAt          `gorm:"column:deleted_at;type:datetime(3);comment:删除时间" json:"deleted_at" swaggertype:"string"`    // 删除时间
+	Type         consts.FilesystemDriver `gorm:"column:type;type:varchar(64);not null;comment:类型" json:"type"`                              // 类型
+	Name         string                  `gorm:"column:name;type:varchar(128);not null;comment:名称" json:"name"`                             // 名称
+	Endpoint     string                  `gorm:"column:endpoint;type:varchar(198);not null;comment:地址" json:"endpoint"`                     // 地址
+	AccessKey    string                  `gorm:"column:access_key;type:varchar(128);not null;comment:AccessKey" json:"access_key"`          // AccessKey
+	AccessSecret string                  `gorm:"column:access_secret;type:varchar(128);not null;comment:AccessSecret" json:"access_secret"` // AccessSecret
+	Bucket       string                  `gorm:"column:bucket;type:varchar(128);not null;comment:Bucket" json:"bucket"`                     // Bucket
+	Options      common.Options          `gorm:"column:options;type:text;comment:配置" json:"options"`                                        // 配置
+	IsDefault    bool                    `gorm:"column:is_default;type:tinyint(1);comment:默认" json:"is_default"`                            // 默认
 }
 
 func (*Driver) TableName(namer schema.Namer) string {

@@ -8,6 +8,8 @@ require (
 	github.com/atom-providers/jwt v0.0.0-20230906104831-c1185cd2831a
 	github.com/atom-providers/log v0.0.0-20230805054420-343ad809890e
 	github.com/atom-providers/service-http v0.0.0-20230811021646-9685461114d2
+	github.com/atom-providers/uuid v0.0.0-20230801062951-5331ee1b8af6
+	github.com/brianvoe/gofakeit/v6 v6.23.0
 	github.com/go-gormigrate/gormigrate/v2 v2.1.0
 	github.com/gofiber/fiber/v2 v2.48.0
 	github.com/jinzhu/copier v0.4.0
@@ -24,12 +26,12 @@ require (
 	github.com/atom-providers/app v0.0.0-20230811021217-98a085634a0a // indirect
 	github.com/atom-providers/config v0.0.0-20230801062037-db91396e3287 // indirect
 	github.com/atom-providers/http-fiber v0.0.0-20230801062902-dd7466ac87eb // indirect
-	github.com/brianvoe/gofakeit/v6 v6.23.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator v9.31.0+incompatible // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
+	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect

@@ -141,3 +141,8 @@ func (dao *DriverDao) FirstByQueryFilter(
 	driverQuery = dao.decorateSortQueryFilter(driverQuery, sortFilter)
 	return driverQuery.First()
 }
+
+func (dao *DriverDao) GetDefaultDriver(ctx context.Context) (*models.Driver, error) {
+	query, table := dao.Context(ctx), dao.query.Driver
+	return query.Where(table.IsDefault.Is(true)).First()
+}

@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/atom-apps/storage/common"
-	"github.com/atom-apps/storage/common/consts"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
@@ -25,11 +24,14 @@ type Filesystem struct {
 	UserID    uint64                    `gorm:"column:user_id;type:bigint unsigned;comment:用户ID" json:"user_id"`                        // 用户ID
 	DriverID  uint64                    `gorm:"column:driver_id;type:bigint unsigned;comment:驱动" json:"driver_id"`                      // 驱动
 	Filename  string                    `gorm:"column:filename;type:varchar(128);not null;comment:文件名" json:"filename"`                 // 文件名
-	Type      consts.Filesystem         `gorm:"column:type;type:varchar(12);not null;comment:类型" json:"type"`                           // 类型
+	RealName  string                    `gorm:"column:real_name;type:varchar(128);not null;comment:真实文件名" json:"real_name"`             // 真实文件名
+	Type      uint32                    `gorm:"column:type;type:tinyint unsigned;not null;comment:类型" json:"type"`                      // 类型
 	ParentID  uint64                    `gorm:"column:parent_id;type:bigint unsigned;comment:父级ID" json:"parent_id"`                    // 父级ID
-	Status    consts.FileStatus         `gorm:"column:status;type:varchar(191);comment:状态" json:"status"`                               // 状态
+	Status    uint32                    `gorm:"column:status;type:tinyint unsigned;comment:状态" json:"status"`                           // 状态
 	Mime      string                    `gorm:"column:mime;type:varchar(128);comment:MIME" json:"mime"`                                 // MIME
 	Ext       string                    `gorm:"column:ext;type:varchar(32);comment:后缀名" json:"ext"`                                     // 后缀名
+	Size      uint64                    `gorm:"column:size;type:bigint unsigned;comment:文件大小" json:"size"`                              // 文件大小
+	Md5       string                    `gorm:"column:md5;type:varchar(32);comment:MD5" json:"md5"`                                     // MD5
 	ShareUUID string                    `gorm:"column:share_uuid;type:varchar(64);comment:共享ID" json:"share_uuid"`                      // 共享ID
 	Metadata  common.FilesystemMetadata `gorm:"column:metadata;type:longblob;comment:元数据" json:"metadata"`                              // 元数据
 }

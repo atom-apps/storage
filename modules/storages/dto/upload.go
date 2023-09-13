@@ -1,9 +1,11 @@
 package dto
 
 type UploadResponse struct {
-	Name      string `json:"name,omitempty"`
-	Mime      string `json:"mime,omitempty"`
-	Ext       string `json:"ext,omitempty"`
-	URL       string `json:"url,omitempty"`
-	Thumbnail string `json:"thumbnail,omitempty"`
+	ID        uint64 `json:"id"`
+	Name      string `json:"name"`
+	RealName  string `json:"real_name"`
+	Mime      string `json:"mime"`
+	Ext       string `json:"ext"`
+	URL       string `json:"url"`
+	Thumbnail string `json:"thumbnail"`
 }

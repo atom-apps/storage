@@ -5,6 +5,8 @@ import (
 )
 
 type Storage interface {
+	ID() uint64
+
 	Exists(path string) (bool, error)
 	IsFile(path string) (bool, error)
 	IsDir(path string) (bool, error)

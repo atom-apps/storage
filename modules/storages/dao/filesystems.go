@@ -31,17 +31,38 @@ func (dao *FilesystemDao) decorateSortQueryFilter(query query.IFilesystemDo, sor
 		return query
 	}
 
+	hasCreatedAt := false
 	orderExprs := []field.Expr{}
 	for _, v := range sortFilter.AscFields() {
+		if v == "type" {
+			continue
+		}
+
+		if v == "created_at" {
+			hasCreatedAt = true
+		}
+
 		if expr, ok := dao.query.Filesystem.GetFieldByName(v); ok {
 			orderExprs = append(orderExprs, expr)
 		}
 	}
 	for _, v := range sortFilter.DescFields() {
+		if v == "type" {
+			continue
+		}
+		if v == "created_at" {
+			hasCreatedAt = true
+		}
 		if expr, ok := dao.query.Filesystem.GetFieldByName(v); ok {
 			orderExprs = append(orderExprs, expr.Desc())
 		}
 	}
+
+	orderExprs = append(orderExprs, dao.query.Filesystem.Type)
+	if !hasCreatedAt {
+		orderExprs = append(orderExprs, dao.query.Filesystem.CreatedAt)
+	}
+
 	return query.Order(orderExprs...)
 }
 
@@ -152,4 +173,13 @@ func (dao *FilesystemDao) FirstByQueryFilter(
 	filesystemQuery = dao.decorateQueryFilter(filesystemQuery, queryFilter)
 	filesystemQuery = dao.decorateSortQueryFilter(filesystemQuery, sortFilter)
 	return filesystemQuery.First()
+}
+
+func (dao *FilesystemDao) GetByIDWithTenantInfo(ctx context.Context, tenantID, userID, id uint64) (*models.Filesystem, error) {
+	query, table := dao.Context(ctx), dao.query.Filesystem
+	return query.Where(
+		table.TenantID.Eq(tenantID),
+		table.UserID.Eq(userID),
+		table.ID.Eq(id),
+	).First()
 }

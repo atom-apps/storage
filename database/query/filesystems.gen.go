@@ -35,11 +35,14 @@ func newFilesystem(db *gorm.DB, opts ...gen.DOOption) filesystem {
 	_filesystem.UserID = field.NewUint64(tableName, "user_id")
 	_filesystem.DriverID = field.NewUint64(tableName, "driver_id")
 	_filesystem.Filename = field.NewString(tableName, "filename")
-	_filesystem.Type = field.NewField(tableName, "type")
+	_filesystem.RealName = field.NewString(tableName, "real_name")
+	_filesystem.Type = field.NewUint32(tableName, "type")
 	_filesystem.ParentID = field.NewUint64(tableName, "parent_id")
-	_filesystem.Status = field.NewField(tableName, "status")
+	_filesystem.Status = field.NewUint32(tableName, "status")
 	_filesystem.Mime = field.NewString(tableName, "mime")
 	_filesystem.Ext = field.NewString(tableName, "ext")
+	_filesystem.Size = field.NewUint64(tableName, "size")
+	_filesystem.Md5 = field.NewString(tableName, "md5")
 	_filesystem.ShareUUID = field.NewString(tableName, "share_uuid")
 	_filesystem.Metadata = field.NewField(tableName, "metadata")
 
@@ -60,11 +63,14 @@ type filesystem struct {
 	UserID    field.Uint64 // 用户ID
 	DriverID  field.Uint64 // 驱动
 	Filename  field.String // 文件名
-	Type      field.Field  // 类型
+	RealName  field.String // 真实文件名
+	Type      field.Uint32 // 类型
 	ParentID  field.Uint64 // 父级ID
-	Status    field.Field  // 状态
+	Status    field.Uint32 // 状态
 	Mime      field.String // MIME
 	Ext       field.String // 后缀名
+	Size      field.Uint64 // 文件大小
+	Md5       field.String // MD5
 	ShareUUID field.String // 共享ID
 	Metadata  field.Field  // 元数据
 
@@ -91,11 +97,14 @@ func (f *filesystem) updateTableName(table string) *filesystem {
 	f.UserID = field.NewUint64(table, "user_id")
 	f.DriverID = field.NewUint64(table, "driver_id")
 	f.Filename = field.NewString(table, "filename")
-	f.Type = field.NewField(table, "type")
+	f.RealName = field.NewString(table, "real_name")
+	f.Type = field.NewUint32(table, "type")
 	f.ParentID = field.NewUint64(table, "parent_id")
-	f.Status = field.NewField(table, "status")
+	f.Status = field.NewUint32(table, "status")
 	f.Mime = field.NewString(table, "mime")
 	f.Ext = field.NewString(table, "ext")
+	f.Size = field.NewUint64(table, "size")
+	f.Md5 = field.NewString(table, "md5")
 	f.ShareUUID = field.NewString(table, "share_uuid")
 	f.Metadata = field.NewField(table, "metadata")
 
@@ -124,7 +133,7 @@ func (f *filesystem) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (f *filesystem) fillFieldMap() {
-	f.fieldMap = make(map[string]field.Expr, 15)
+	f.fieldMap = make(map[string]field.Expr, 18)
 	f.fieldMap["id"] = f.ID
 	f.fieldMap["created_at"] = f.CreatedAt
 	f.fieldMap["updated_at"] = f.UpdatedAt
@@ -133,11 +142,14 @@ func (f *filesystem) fillFieldMap() {
 	f.fieldMap["user_id"] = f.UserID
 	f.fieldMap["driver_id"] = f.DriverID
 	f.fieldMap["filename"] = f.Filename
+	f.fieldMap["real_name"] = f.RealName
 	f.fieldMap["type"] = f.Type
 	f.fieldMap["parent_id"] = f.ParentID
 	f.fieldMap["status"] = f.Status
 	f.fieldMap["mime"] = f.Mime
 	f.fieldMap["ext"] = f.Ext
+	f.fieldMap["size"] = f.Size
+	f.fieldMap["md5"] = f.Md5
 	f.fieldMap["share_uuid"] = f.ShareUUID
 	f.fieldMap["metadata"] = f.Metadata
 }

@@ -2,7 +2,6 @@ package migrations
 
 import (
 	"github.com/atom-apps/storage/common"
-	"github.com/atom-apps/storage/common/consts"
 	"github.com/rogeecn/atom/contracts"
 	"gorm.io/gorm"
 )
@@ -13,9 +12,10 @@ func (m *Migration20230912_104027CreateFilesystem) table() interface{} {
 		ModelWithUser
 		DriverID  uint                      `gorm:"comment:驱动"`
 		Filename  string                    `gorm:"size:128;not null;index:idx_filename;comment:文件名"`
-		Type      consts.Filesystem         `gorm:"size:12;not null;comment:类型"`
+		RealName  string                    `gorm:"size:128;not null;comment:真实文件名"`
+		Type      uint                      `gorm:"size:1;not null;comment:类型"`
 		ParentID  uint                      `gorm:"comment:父级ID"`
-		Status    consts.FileStatus         `gorm:"comment:状态"`
+		Status    uint                      `gorm:"size:1;comment:状态"`
 		Mime      string                    `gorm:"size:128;index:idx_mime;comment:MIME"`
 		Ext       string                    `gorm:"size:32;index:idx_ext;comment:后缀名"`
 		Size      uint                      `gorm:"comment:文件大小"`

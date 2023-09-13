@@ -2,8 +2,11 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/atom-apps/storage/common"
+	"github.com/atom-apps/storage/common/consts"
+	"github.com/atom-apps/storage/common/storages/local"
 	"github.com/atom-apps/storage/database/models"
 	"github.com/atom-apps/storage/modules/storages/dao"
 	"github.com/atom-apps/storage/modules/storages/dto"
@@ -88,4 +91,20 @@ func (svc *DriverService) UpdateFromModel(ctx context.Context, model *models.Dri
 // Delete
 func (svc *DriverService) Delete(ctx context.Context, id uint64) error {
 	return svc.driverDao.Delete(ctx, id)
+}
+
+func (svc *DriverService) GetDefault(ctx context.Context) (common.Storage, error) {
+	driver, err := svc.driverDao.GetDefaultDriver(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	switch driver.Type {
+	case consts.FilesystemDriverLocal:
+		return local.New(driver), nil
+	case consts.FilesystemDriverAliyunOss:
+		return nil, nil
+	}
+
+	return nil, errors.New("no valid storage driver")
 }

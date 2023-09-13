@@ -2,11 +2,15 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"path/filepath"
 
 	"github.com/atom-apps/storage/common"
 	"github.com/atom-apps/storage/database/models"
 	"github.com/atom-apps/storage/modules/storages/dao"
 	"github.com/atom-apps/storage/modules/storages/dto"
+	"github.com/pkg/errors"
+	"github.com/samber/lo"
 
 	"github.com/jinzhu/copier"
 )
@@ -28,6 +32,7 @@ func (svc *FilesystemService) DecorateItem(model *models.Filesystem, id int) *dt
 		Type:      model.Type,
 		ParentID:  model.ParentID,
 		Status:    model.Status,
+		Ext:       model.Ext,
 		Mime:      model.Mime,
 		ShareUUID: model.ShareUUID,
 		Metadata:  model.Metadata,
@@ -87,4 +92,73 @@ func (svc *FilesystemService) UpdateFromModel(ctx context.Context, model *models
 // Delete
 func (svc *FilesystemService) Delete(ctx context.Context, id uint64) error {
 	return svc.filesystemDao.Delete(ctx, id)
+}
+
+// CreateSubDirectory
+func (svc *FilesystemService) CreateSubDirectory(ctx context.Context, tenantID, userID, parentID uint64, name string) error {
+	model := &models.Filesystem{
+		TenantID:  tenantID,
+		UserID:    userID,
+		DriverID:  0,
+		Filename:  name,
+		Type:      0,
+		ParentID:  parentID,
+		Status:    0,
+		Mime:      "",
+		Ext:       "",
+		ShareUUID: "",
+	}
+	return svc.CreateFromModel(ctx, model)
+}
+
+// GetDirectoryTree
+func (svc *FilesystemService) GetDirectoryTree(ctx context.Context, tenantID, userID uint64) ([]*dto.FilesystemItem, error) {
+	queryFilter := &dto.FilesystemListQueryFilter{TenantID: &tenantID, UserID: &userID, Type: lo.ToPtr[uint32](0)}
+	items, err := svc.FindByQueryFilter(ctx, queryFilter, &common.SortQueryFilter{})
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*dto.FilesystemItem
+	for _, item := range items {
+		result = append(result, svc.DecorateItem(item, 0))
+	}
+
+	return svc.genTree(result, 0), nil
+}
+
+func (svc *FilesystemService) genTree(items []*dto.FilesystemItem, parentID uint64) []*dto.FilesystemItem {
+	var result []*dto.FilesystemItem
+	for _, item := range items {
+		if item.ParentID == parentID {
+			item.Children = svc.genTree(items, item.ID)
+			result = append(result, item)
+		}
+	}
+	return result
+}
+
+func (svc *FilesystemService) GetByIDWithTenantInfo(ctx context.Context, tenantID, userID, id uint64) (*models.Filesystem, error) {
+	return svc.filesystemDao.GetByIDWithTenantInfo(ctx, tenantID, userID, id)
+}
+
+func (svc *FilesystemService) GetPath(ctx context.Context, tenantID, userID, id uint64) (string, error) {
+	if id == 0 {
+		return "", nil
+	}
+
+	paths := []string{}
+	for {
+		m, err := svc.GetByIDWithTenantInfo(ctx, tenantID, userID, id)
+		if err != nil {
+			return "", errors.Wrap(err, fmt.Sprintf("%d", id))
+		}
+		paths = append(paths, m.Filename)
+		if m.ParentID == 0 {
+			break
+		}
+		id = m.ParentID
+	}
+
+	return filepath.Join(lo.Reverse(paths)...), nil
 }

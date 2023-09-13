@@ -4,6 +4,7 @@ import (
 	"github.com/atom-apps/storage/common"
 	"github.com/atom-apps/storage/modules/storages/dto"
 	"github.com/atom-apps/storage/modules/storages/service"
+	"github.com/atom-providers/jwt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/samber/lo"
@@ -45,10 +46,17 @@ func (c *FilesystemController) Show(ctx *fiber.Ctx, id uint64) (*dto.FilesystemI
 //	@Router			/v1/storages/filesystems [get]
 func (c *FilesystemController) List(
 	ctx *fiber.Ctx,
+	claim *jwt.Claims,
 	queryFilter *dto.FilesystemListQueryFilter,
 	pageFilter *common.PageQueryFilter,
 	sortFilter *common.SortQueryFilter,
 ) (*common.PageDataResponse, error) {
+	if !claim.IsAdmin() {
+		queryFilter.UserID = &claim.UserID
+		queryFilter.TenantID = &claim.TenantID
+	}
+	queryFilter.Type = lo.ToPtr[uint32](1)
+
 	items, total, err := c.filesystemSvc.PageByQueryFilter(ctx.Context(), queryFilter, pageFilter, sortFilter)
 	if err != nil {
 		return nil, err
@@ -100,3 +108,32 @@ func (c *FilesystemController) Update(ctx *fiber.Ctx, id uint64, body *dto.Files
 func (c *FilesystemController) Delete(ctx *fiber.Ctx, id uint64) error {
 	return c.filesystemSvc.Delete(ctx.Context(), id)
 }
+
+// Directory
+//
+//	@Summary		Directory
+//	@Tags			Storage
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		int	true	"FilesystemID"
+//	@Success		200	{string}	FilesystemID
+//	@Router			/v1/storages/filesystems/{id}/directory/{directory} [post]
+func (c *FilesystemController) Directory(ctx *fiber.Ctx, claim *jwt.Claims, id uint64, directory string) error {
+	return c.filesystemSvc.CreateSubDirectory(ctx.Context(), claim.TenantID, claim.UserID, id, directory)
+}
+
+// 目录列表
+
+// DirectoryTree
+//
+//	@Summary		Directory
+//	@Tags			Storage
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{string}	FilesystemID
+//	@Router			/v1/storages/filesystems/directories/tree [get]
+func (c *FilesystemController) DirectoryTree(ctx *fiber.Ctx, claim *jwt.Claims) ([]*dto.FilesystemItem, error) {
+	return c.filesystemSvc.GetDirectoryTree(ctx.Context(), claim.TenantID, claim.UserID)
+}
+
+// 目录列表

@@ -31,13 +31,14 @@ func newDriver(db *gorm.DB, opts ...gen.DOOption) driver {
 	_driver.CreatedAt = field.NewTime(tableName, "created_at")
 	_driver.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_driver.DeletedAt = field.NewField(tableName, "deleted_at")
-	_driver.Type = field.NewString(tableName, "type")
+	_driver.Type = field.NewField(tableName, "type")
 	_driver.Name = field.NewString(tableName, "name")
 	_driver.Endpoint = field.NewString(tableName, "endpoint")
 	_driver.AccessKey = field.NewString(tableName, "access_key")
 	_driver.AccessSecret = field.NewString(tableName, "access_secret")
 	_driver.Bucket = field.NewString(tableName, "bucket")
 	_driver.Options = field.NewField(tableName, "options")
+	_driver.IsDefault = field.NewBool(tableName, "is_default")
 
 	_driver.fillFieldMap()
 
@@ -52,13 +53,14 @@ type driver struct {
 	CreatedAt    field.Time   // 创建时间
 	UpdatedAt    field.Time   // 更新时间
 	DeletedAt    field.Field  // 删除时间
-	Type         field.String // 类型
+	Type         field.Field  // 类型
 	Name         field.String // 名称
 	Endpoint     field.String // 地址
 	AccessKey    field.String // AccessKey
 	AccessSecret field.String // AccessSecret
 	Bucket       field.String // Bucket
 	Options      field.Field  // 配置
+	IsDefault    field.Bool   // 默认
 
 	fieldMap map[string]field.Expr
 }
@@ -79,13 +81,14 @@ func (d *driver) updateTableName(table string) *driver {
 	d.CreatedAt = field.NewTime(table, "created_at")
 	d.UpdatedAt = field.NewTime(table, "updated_at")
 	d.DeletedAt = field.NewField(table, "deleted_at")
-	d.Type = field.NewString(table, "type")
+	d.Type = field.NewField(table, "type")
 	d.Name = field.NewString(table, "name")
 	d.Endpoint = field.NewString(table, "endpoint")
 	d.AccessKey = field.NewString(table, "access_key")
 	d.AccessSecret = field.NewString(table, "access_secret")
 	d.Bucket = field.NewString(table, "bucket")
 	d.Options = field.NewField(table, "options")
+	d.IsDefault = field.NewBool(table, "is_default")
 
 	d.fillFieldMap()
 
@@ -110,7 +113,7 @@ func (d *driver) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (d *driver) fillFieldMap() {
-	d.fieldMap = make(map[string]field.Expr, 11)
+	d.fieldMap = make(map[string]field.Expr, 12)
 	d.fieldMap["id"] = d.ID
 	d.fieldMap["created_at"] = d.CreatedAt
 	d.fieldMap["updated_at"] = d.UpdatedAt
@@ -122,6 +125,7 @@ func (d *driver) fillFieldMap() {
 	d.fieldMap["access_secret"] = d.AccessSecret
 	d.fieldMap["bucket"] = d.Bucket
 	d.fieldMap["options"] = d.Options
+	d.fieldMap["is_default"] = d.IsDefault
 }
 
 func (d driver) clone(db *gorm.DB) driver {

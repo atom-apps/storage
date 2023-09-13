@@ -1,0 +1,9 @@
+###
+# 获取前端路由列表
+GET {{host}}/storages/filesystems
+Authorization: {{token}}
+
+###
+# Tree
+GET {{host}}/storages/filesystems/directories/tree
+Authorization: {{token}}
