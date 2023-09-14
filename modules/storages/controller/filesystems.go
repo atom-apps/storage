@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"strings"
+
 	"github.com/atom-apps/storage/common"
+	"github.com/atom-apps/storage/common/errorx"
 	"github.com/atom-apps/storage/modules/storages/dto"
 	"github.com/atom-apps/storage/modules/storages/service"
 	"github.com/atom-providers/jwt"
@@ -117,9 +120,13 @@ func (c *FilesystemController) Delete(ctx *fiber.Ctx, id uint64) error {
 //	@Produce		json
 //	@Param			id	path		int	true	"FilesystemID"
 //	@Success		200	{string}	FilesystemID
-//	@Router			/v1/storages/filesystems/{id}/directory/{directory} [post]
-func (c *FilesystemController) Directory(ctx *fiber.Ctx, claim *jwt.Claims, id uint64, directory string) error {
-	return c.filesystemSvc.CreateSubDirectory(ctx.Context(), claim.TenantID, claim.UserID, id, directory)
+//	@Router			/v1/storages/filesystems/{id}/directory [post]
+func (c *FilesystemController) Directory(ctx *fiber.Ctx, claim *jwt.Claims, id uint64, body *dto.CreateSubDirectoryForm) error {
+	name := strings.TrimSpace(body.Name)
+	if name == "" {
+		return errorx.ErrInvalidRequest
+	}
+	return c.filesystemSvc.CreateSubDirectory(ctx.Context(), claim.TenantID, claim.UserID, id, body.Name)
 }
 
 // 目录列表

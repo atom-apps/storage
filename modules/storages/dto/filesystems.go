@@ -49,3 +49,7 @@ type FilesystemItem struct {
 	Metadata  common.FilesystemMetadata `json:"metadata,omitempty"`   // 元数据
 	Children  []*FilesystemItem         `json:"children,omitempty"`   // 子级
 }
+
+type CreateSubDirectoryForm struct {
+	Name string `json:"name" form:"name"`
+}

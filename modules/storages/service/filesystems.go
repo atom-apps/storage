@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"strings"
 
 	"github.com/atom-apps/storage/common"
 	"github.com/atom-apps/storage/database/models"
@@ -96,19 +97,39 @@ func (svc *FilesystemService) Delete(ctx context.Context, id uint64) error {
 
 // CreateSubDirectory
 func (svc *FilesystemService) CreateSubDirectory(ctx context.Context, tenantID, userID, parentID uint64, name string) error {
-	model := &models.Filesystem{
-		TenantID:  tenantID,
-		UserID:    userID,
-		DriverID:  0,
-		Filename:  name,
-		Type:      0,
-		ParentID:  parentID,
-		Status:    0,
-		Mime:      "",
-		Ext:       "",
-		ShareUUID: "",
+	names := strings.Split(name, "/")
+
+	for _, name := range names {
+		dirs := []string{name}
+		changeParentID := true
+		if strings.HasPrefix(name, "{") && strings.HasSuffix(name, "}") {
+			dirs = strings.Split(strings.Trim(name, "{}"), ",")
+			changeParentID = false
+		}
+		for _, dir := range dirs {
+			model := &models.Filesystem{
+				TenantID:  tenantID,
+				UserID:    userID,
+				DriverID:  0,
+				Filename:  dir,
+				Type:      0,
+				ParentID:  parentID,
+				Status:    0,
+				Mime:      "",
+				Ext:       "",
+				ShareUUID: "",
+			}
+			if err := svc.CreateFromModel(ctx, model); err != nil {
+				return err
+			}
+
+			if changeParentID {
+				parentID = model.ID
+			}
+		}
+
 	}
-	return svc.CreateFromModel(ctx, model)
+	return nil
 }
 
 // GetDirectoryTree
