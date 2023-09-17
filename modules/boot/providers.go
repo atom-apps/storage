@@ -12,6 +12,7 @@ import (
 
 func Providers() container.Providers {
 	return container.Providers{
+		{Provider: provideHttpStatics},
 		{Provider: provideHttpMiddleware},
 	}
 }
@@ -25,6 +26,14 @@ func provideHttpMiddleware(opts ...opt.Option) error {
 		// Initialize default config
 		engine.Use(cors.New())
 		engine.Use(httpMiddlewareJWT(jwt))
+		return nil
+	}, atom.GroupInitial)
+}
+
+func provideHttpStatics(opts ...opt.Option) error {
+	return container.Container.Provide(func(httpsvc contracts.HttpService) contracts.Initial {
+		engine := httpsvc.GetEngine().(*fiber.App)
+		engine.Static("/statics/", "/Users/rogee/Develop/myself/atom-app/statics")
 		return nil
 	}, atom.GroupInitial)
 }

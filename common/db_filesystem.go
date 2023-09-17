@@ -15,6 +15,7 @@ type FileInfoImage struct {
 type FilesystemMetadata struct {
 	FileInfo      any     `json:"file_info,omitempty"`
 	SharePassword *string `json:"share_password,omitempty" form:"share_password"`
+	Thumbnail     *string `json:"thumbnail,omitempty"`
 }
 
 func (j FilesystemMetadata) Value() (driver.Value, error) {

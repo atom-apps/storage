@@ -19,9 +19,45 @@ import (
 // @provider
 type FilesystemService struct {
 	filesystemDao *dao.FilesystemDao
+	driverDao     *dao.DriverDao
+	thumbnailSvc  *ThumbnailService
+	driverSvc     *DriverService
 }
 
 func (svc *FilesystemService) DecorateItem(model *models.Filesystem, id int) *dto.FilesystemItem {
+	metadata := model.Metadata
+
+	mime := common.NewMime(model.Mime)
+	if mime.IsImage() {
+		if driver, err := svc.driverDao.GetByID(context.Background(), model.DriverID); err == nil {
+			host := svc.driverSvc.GetHostFromDriver(context.Background(), driver)
+			// path 中包含filename
+			if path, err := svc.GetPath(context.Background(), model.TenantID, model.UserID, model.ID); err == nil {
+				filenamePath := fmt.Sprintf(
+					"%s/%s/%s.%s",
+					strings.TrimRight(driver.Bucket, "/"),
+					filepath.Dir(strings.Trim(path, "/")),
+					model.RealName,
+					model.Ext,
+				)
+				if filepath.Dir(strings.Trim(path, "/")) == "." {
+					filenamePath = fmt.Sprintf(
+						"%s/%s.%s",
+						strings.TrimRight(driver.Bucket, "/"),
+						model.RealName,
+						model.Ext,
+					)
+				}
+
+				err := svc.thumbnailSvc.Resize(context.Background(), filenamePath, model.RealName, common.Size100x100)
+				if err == nil {
+					file := fmt.Sprintf("%s/%s/thumb/%s/%s.%s", host, filepath.Dir(path), common.Size100x100, model.RealName, model.Ext)
+					metadata.Thumbnail = lo.ToPtr(file)
+				}
+			}
+		}
+	}
+
 	return &dto.FilesystemItem{
 		ID:        model.ID,
 		CreatedAt: model.CreatedAt,
@@ -36,7 +72,7 @@ func (svc *FilesystemService) DecorateItem(model *models.Filesystem, id int) *dt
 		Ext:       model.Ext,
 		Mime:      model.Mime,
 		ShareUUID: model.ShareUUID,
-		Metadata:  model.Metadata,
+		Metadata:  metadata,
 	}
 }
 

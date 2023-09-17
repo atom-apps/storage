@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/atom-apps/storage/common"
 	"github.com/atom-apps/storage/common/consts"
@@ -107,4 +109,24 @@ func (svc *DriverService) GetDefault(ctx context.Context) (common.Storage, error
 	}
 
 	return nil, errors.New("no valid storage driver")
+}
+
+func (svc *DriverService) GetHostFromDriver(ctx context.Context, driver *models.Driver) string {
+	host := ""
+	switch driver.Type {
+	case consts.FilesystemDriverLocal:
+		if strings.HasPrefix(driver.Endpoint, "http") {
+			host = driver.Endpoint
+		} else {
+			host = fmt.Sprintf("//%s", driver.Endpoint)
+		}
+	default:
+		if strings.HasPrefix(driver.Endpoint, "http") {
+			host = fmt.Sprintf("//%s/%s", driver.Endpoint, driver.Bucket)
+		} else {
+			host = fmt.Sprintf("%s/%s", driver.Endpoint, driver.Bucket)
+		}
+	}
+
+	return strings.TrimRight(host, "/")
 }

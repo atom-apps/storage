@@ -21,7 +21,7 @@ func TestThumbnailService_Resize(t *testing.T) {
 		}
 		for _, size := range sizes {
 			ins := &ThumbnailService{}
-			err := ins.Resize(context.TODO(), fabfile.MustFind("tests/images/jpeg.jpeg"), size)
+			err := ins.Resize(context.TODO(), fabfile.MustFind("tests/images/jpeg.jpeg"), "a", size)
 			So(err, ShouldBeNil)
 		}
 	})

@@ -50,6 +50,7 @@ func (s *FilesystemSeeder) Generate(faker *gofakeit.Faker, idx int) models.Files
 		UserID:    1,
 		DriverID:  1,
 		Filename:  faker.AppName(),
+		RealName:  faker.UUID(),
 		Type:      uint32(typ),
 		ParentID:  uint64(parentID),
 		Status:    uint32(faker.RandomInt([]int{0, 1})),

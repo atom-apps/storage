@@ -43,7 +43,9 @@ func (c *UploadController) Upload(ctx *fiber.Ctx, claim *jwt.Claims, id uint64) 
 	if err != nil {
 		return nil, err
 	}
-	realName := fmt.Sprintf("%s%s", c.uuid.MustGenerate(), filepath.Ext(file.Filename))
+
+	uuid := c.uuid.MustGenerate()
+	realName := fmt.Sprintf("%s%s", uuid, filepath.Ext(file.Filename))
 
 	dst = filepath.Join(dst, realName)
 	log.Infof("save file(%s) to path %s", file.Filename, dst)
@@ -63,7 +65,7 @@ func (c *UploadController) Upload(ctx *fiber.Ctx, claim *jwt.Claims, id uint64) 
 		UserID:   claim.UserID,
 		DriverID: driver.ID(),
 		Filename: file.Filename[0 : len(file.Filename)-len(filepath.Ext(file.Filename))],
-		RealName: realName,
+		RealName: uuid,
 		Type:     1,
 		ParentID: id,
 		Status:   0,

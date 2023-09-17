@@ -16,7 +16,7 @@ func (m *Migration20230912_104027CreateFilesystem) table() interface{} {
 		Type      uint                      `gorm:"size:1;not null;comment:类型"`
 		ParentID  uint                      `gorm:"comment:父级ID"`
 		Status    uint                      `gorm:"size:1;comment:状态"`
-		Mime      string                    `gorm:"size:128;index:idx_mime;comment:MIME"`
+		Mime      string                    `gorm:"size:256;index:idx_mime;comment:MIME"`
 		Ext       string                    `gorm:"size:32;index:idx_ext;comment:后缀名"`
 		Size      uint                      `gorm:"comment:文件大小"`
 		Md5       string                    `gorm:"size:32;comment:MD5"`
