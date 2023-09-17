@@ -130,6 +130,10 @@ func (dao *FilesystemDao) Create(ctx context.Context, model *models.Filesystem) 
 	return dao.Context(ctx).Create(model)
 }
 
+func (dao *FilesystemDao) CreateInBatch(ctx context.Context, models []*models.Filesystem) error {
+	return dao.Context(ctx).CreateInBatches(models, 100)
+}
+
 func (dao *FilesystemDao) GetByID(ctx context.Context, id uint64) (*models.Filesystem, error) {
 	return dao.Context(ctx).Where(dao.query.Filesystem.ID.Eq(id)).First()
 }
@@ -182,4 +186,23 @@ func (dao *FilesystemDao) GetByIDWithTenantInfo(ctx context.Context, tenantID, u
 		table.UserID.Eq(userID),
 		table.ID.Eq(id),
 	).First()
+}
+
+func (dao *FilesystemDao) GetByIDsWithTenantInfo(ctx context.Context, tenantID, userID uint64, id []uint64) ([]*models.Filesystem, error) {
+	query, table := dao.Context(ctx), dao.query.Filesystem
+	return query.Where(
+		table.TenantID.Eq(tenantID),
+		table.UserID.Eq(userID),
+		table.ID.In(id...),
+	).Find()
+}
+
+func (dao *FilesystemDao) MoveFiles(ctx context.Context, tenantID, userID, parentID uint64, files []uint64) error {
+	query, table := dao.Context(ctx), dao.query.Filesystem
+	_, err := query.Where(
+		table.TenantID.Eq(tenantID),
+		table.UserID.Eq(userID),
+		table.ID.In(files...),
+	).Update(table.ParentID, parentID)
+	return err
 }

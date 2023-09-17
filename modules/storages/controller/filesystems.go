@@ -143,4 +143,26 @@ func (c *FilesystemController) DirectoryTree(ctx *fiber.Ctx, claim *jwt.Claims) 
 	return c.filesystemSvc.GetDirectoryTree(ctx.Context(), claim.TenantID, claim.UserID)
 }
 
-// 目录列表
+// MoveFiles
+//
+//	@Summary		MoveFiles
+//	@Tags			Storage
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{string}	FilesystemID
+//	@Router			/v1/storages/filesystems/{id}/move [post]
+func (c *FilesystemController) MoveFiles(ctx *fiber.Ctx, claim *jwt.Claims, id uint64, body *common.IDsForm) error {
+	return c.filesystemSvc.MoveFiles(ctx.Context(), claim.TenantID, claim.UserID, id, body.ID)
+}
+
+// CopyFiles
+//
+//	@Summary		CopyFiles
+//	@Tags			Storage
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{string}	FilesystemID
+//	@Router			/v1/storages/filesystems/{id}/copy [post]
+func (c *FilesystemController) CopyFiles(ctx *fiber.Ctx, claim *jwt.Claims, id uint64, body *common.IDsForm) error {
+	return c.filesystemSvc.CopyFiles(ctx.Context(), claim.TenantID, claim.UserID, id, body.ID)
+}

@@ -163,6 +163,10 @@ func (svc *FilesystemService) GetByIDWithTenantInfo(ctx context.Context, tenantI
 	return svc.filesystemDao.GetByIDWithTenantInfo(ctx, tenantID, userID, id)
 }
 
+func (svc *FilesystemService) GetByIDsWithTenantInfo(ctx context.Context, tenantID, userID uint64, id []uint64) ([]*models.Filesystem, error) {
+	return svc.filesystemDao.GetByIDsWithTenantInfo(ctx, tenantID, userID, id)
+}
+
 func (svc *FilesystemService) GetPath(ctx context.Context, tenantID, userID, id uint64) (string, error) {
 	if id == 0 {
 		return "", nil
@@ -182,4 +186,35 @@ func (svc *FilesystemService) GetPath(ctx context.Context, tenantID, userID, id 
 	}
 
 	return filepath.Join(lo.Reverse(paths)...), nil
+}
+
+func (svc *FilesystemService) MoveFiles(ctx context.Context, tenantID, userID, parentID uint64, files []uint64) error {
+	return svc.filesystemDao.MoveFiles(ctx, tenantID, userID, parentID, files)
+}
+
+func (svc *FilesystemService) CopyFiles(ctx context.Context, tenantID, userID, parentID uint64, files []uint64) error {
+	items, err := svc.GetByIDsWithTenantInfo(ctx, tenantID, userID, files)
+	if err != nil {
+		return err
+	}
+
+	ms := []*models.Filesystem{}
+	for _, item := range items {
+		ms = append(ms, &models.Filesystem{
+			TenantID: tenantID,
+			UserID:   userID,
+			DriverID: item.DriverID,
+			Filename: item.Filename,
+			RealName: item.RealName,
+			Type:     item.Type,
+			ParentID: parentID,
+			Status:   item.Status,
+			Mime:     item.Mime,
+			Ext:      item.Ext,
+			Size:     item.Size,
+			Md5:      item.Md5,
+		})
+	}
+
+	return svc.filesystemDao.CreateInBatch(ctx, ms)
 }

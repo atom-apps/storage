@@ -23,4 +23,6 @@ func routeFilesystemController(engine fiber.Router, controller *controller.Files
 	engine.Delete(strings.TrimPrefix("/v1/storages/filesystems/:id<int>", basePath), Func1(controller.Delete, Integer[uint64]("id", PathParamError)))
 	engine.Post(strings.TrimPrefix("/v1/storages/filesystems/:id<int>/directory", basePath), Func3(controller.Directory, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError), Body[dto.CreateSubDirectoryForm](BodyParamError)))
 	engine.Get(strings.TrimPrefix("/v1/storages/filesystems/directories/tree", basePath), DataFunc1(controller.DirectoryTree, JwtClaim[jwt.Claims](ClaimParamError)))
+	engine.Post(strings.TrimPrefix("/v1/storages/filesystems/:id<int>/move", basePath), Func3(controller.MoveFiles, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError), Body[common.IDsForm](BodyParamError)))
+	engine.Post(strings.TrimPrefix("/v1/storages/filesystems/:id<int>/copy", basePath), Func3(controller.CopyFiles, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError), Body[common.IDsForm](BodyParamError)))
 }

@@ -1,0 +1,25 @@
+package common
+
+var MimeExt = map[string]string{
+	"image/jpeg":         "jpeg",
+	"image/png":          "png",
+	"image/gif":          "gif",
+	"image/bmp":          "bmp",
+	"image/tiff":         "tiff",
+	"image/webp":         "webp",
+	"image/svg+xml":      "svg",
+	"image/x-icon":       "ico",
+	"image/heif":         "heif",
+	"image/jp2":          "jp2",
+	"application/msword": "doc",
+	"application/vnd.openxmlformats-officedocument.wordprocessingml.document": "docx",
+	"application/vnd.ms-excel": "xls",
+	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "xlsx",
+	"application/pdf":          "pdf",
+	"application/zip":          "zip",
+	"application/octet-stream": "bin",
+	"video/mp4":                "mp4",
+	"video/mpeg":               "mpeg",
+	"video/quicktime":          "mov",
+	"video/x-msvideo":          "avi",
+}

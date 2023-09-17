@@ -7,7 +7,13 @@ import (
 	"fmt"
 )
 
+type FileInfoImage struct {
+	Width  int
+	Height int
+}
+
 type FilesystemMetadata struct {
+	FileInfo      any     `json:"file_info,omitempty"`
 	SharePassword *string `json:"share_password,omitempty" form:"share_password"`
 }
 
