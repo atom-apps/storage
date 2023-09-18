@@ -26,6 +26,7 @@ type FilesystemService struct {
 
 func (svc *FilesystemService) DecorateItem(model *models.Filesystem, id int) *dto.FilesystemItem {
 	metadata := model.Metadata
+	metadata.HumanFileSize = common.HumanReadableSize(model.Size)
 
 	mime := common.NewMime(model.Mime)
 	if mime.IsImage() {
