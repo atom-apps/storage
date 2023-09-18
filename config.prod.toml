@@ -1,0 +1,14 @@
+[Http]
+Port = 9801
+
+[Redis]
+Addresses = ["localhost:6379"]
+Password = ""
+DB = 0
+
+[MySQL]
+Username = "root"
+Password = "admin"
+Database = "atom_storage"
+Host = "localhost"
+Port = 3306

@@ -43,3 +43,7 @@ mdown:
 .PHONY: model
 model:
 	@go run . model
+
+.PHONY: docker
+docker:
+    docker build -t registry.cn-hangzhou.aliyuncs.com/atom-apps/storage:dev-latest .
