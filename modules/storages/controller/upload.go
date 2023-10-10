@@ -1,7 +1,9 @@
 package controller
 
 import (
+	"context"
 	"fmt"
+	"mime/multipart"
 	"path/filepath"
 	"strings"
 
@@ -13,6 +15,7 @@ import (
 	"github.com/atom-providers/uuid"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-module/carbon/v2"
 )
 
 // @provider
@@ -22,29 +25,52 @@ type UploadController struct {
 	uuid   *uuid.Generator
 }
 
-// Upload
+// Dir files to dir
 //
-//	@Summary		Upload
+//	@Summary		FileToDir
 //	@Tags			Storage
 //	@Produce		json
 //	@Success		200	{object}	dto.FilesystemItem
-//	@Router			/v1/storages/uploads/{id} [post]
-func (c *UploadController) Upload(ctx *fiber.Ctx, claim *jwt.Claims, id uint64) (*dto.FilesystemItem, error) {
+//	@Router			/v1/storages/uploads/dir/{id} [post]
+func (c *UploadController) Dir(ctx *fiber.Ctx, claim *jwt.Claims, id uint64) (*dto.FilesystemItem, error) {
 	file, err := ctx.FormFile("file")
 	if err != nil {
 		return nil, err
 	}
 
-	driver, err := c.driver.GetDefault(ctx.Context())
+	dst, err := c.fs.GetPathByID(ctx.Context(), claim.TenantID, claim.UserID, id)
+	if err != nil {
+		return nil, err
+	}
+	return c.save(ctx.Context(), claim, id, file, dst)
+}
+
+// Posts Upload files to posts dir
+//
+//	@Summary		FileToPosts
+//	@Tags			Storage
+//	@Produce		json
+//	@Success		200	{object}	dto.FilesystemItem
+//	@Router			/v1/storages/uploads/posts [post]
+func (c *UploadController) Posts(ctx *fiber.Ctx, claim *jwt.Claims) (*dto.FilesystemItem, error) {
+	file, err := ctx.FormFile("file")
 	if err != nil {
 		return nil, err
 	}
 
-	dst, err := c.fs.GetPath(ctx.Context(), claim.TenantID, claim.UserID, id)
+	now := carbon.Now()
+
+	dir := fmt.Sprintf("posts/%d/%d/%d", now.Year(), now.Month(), now.Day())
+
+	fs, err := c.fs.CreateDir(ctx.Context(), claim.TenantID, claim.UserID, dir)
 	if err != nil {
 		return nil, err
 	}
 
+	return c.save(ctx.Context(), claim, fs.ID, file, dir)
+}
+
+func (c *UploadController) save(ctx context.Context, claim *jwt.Claims, parentID uint64, file *multipart.FileHeader, dst string) (*dto.FilesystemItem, error) {
 	uuid := c.uuid.MustGenerate()
 	realName := fmt.Sprintf("%s%s", uuid, filepath.Ext(file.Filename))
 
@@ -57,6 +83,11 @@ func (c *UploadController) Upload(ctx *fiber.Ctx, claim *jwt.Claims, id uint64) 
 	}
 	defer fd.Close()
 
+	driver, err := c.driver.GetDefault(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	if _, err := driver.Put(dst, fd); err != nil {
 		return nil, err
 	}
@@ -68,14 +99,14 @@ func (c *UploadController) Upload(ctx *fiber.Ctx, claim *jwt.Claims, id uint64) 
 		Filename: file.Filename[0 : len(file.Filename)-len(filepath.Ext(file.Filename))],
 		RealName: uuid,
 		Type:     1,
-		ParentID: id,
+		ParentID: parentID,
 		Status:   0,
 		Mime:     file.Header.Get("Content-Type"),
 		Ext:      strings.Trim(filepath.Ext(file.Filename), "."),
 		Size:     uint64(file.Size),
 		Md5:      "",
 	}
-	if err := c.fs.CreateFromModel(ctx.Context(), model); err != nil {
+	if err := c.fs.CreateFromModel(ctx, model); err != nil {
 		return nil, err
 	}
 

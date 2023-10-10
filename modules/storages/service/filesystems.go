@@ -12,6 +12,7 @@ import (
 	"github.com/atom-apps/storage/modules/storages/dto"
 	"github.com/pkg/errors"
 	"github.com/samber/lo"
+	"gorm.io/gorm"
 
 	"github.com/jinzhu/copier"
 )
@@ -33,7 +34,7 @@ func (svc *FilesystemService) DecorateItem(model *models.Filesystem, id int) *dt
 		if driver, err := svc.driverDao.GetByID(context.Background(), model.DriverID); err == nil {
 			host := svc.driverSvc.GetHostFromDriver(context.Background(), driver)
 			// path 中包含filename
-			if path, err := svc.GetPath(context.Background(), model.TenantID, model.UserID, model.ID); err == nil {
+			if path, err := svc.GetPathByID(context.Background(), model.TenantID, model.UserID, model.ID); err == nil {
 				filenamePath := fmt.Sprintf(
 					"%s/%s/%s.%s",
 					strings.TrimRight(driver.Bucket, "/"),
@@ -204,7 +205,7 @@ func (svc *FilesystemService) GetByIDsWithTenantInfo(ctx context.Context, tenant
 	return svc.filesystemDao.GetByIDsWithTenantInfo(ctx, tenantID, userID, id)
 }
 
-func (svc *FilesystemService) GetPath(ctx context.Context, tenantID, userID, id uint64) (string, error) {
+func (svc *FilesystemService) GetPathByID(ctx context.Context, tenantID, userID, id uint64) (string, error) {
 	if id == 0 {
 		return "", nil
 	}
@@ -258,4 +259,59 @@ func (svc *FilesystemService) CopyFiles(ctx context.Context, tenantID, userID, p
 
 func (svc *FilesystemService) GetByRealNames(ctx context.Context, names []string) ([]*models.Filesystem, error) {
 	return svc.filesystemDao.GetByRealNames(ctx, names)
+}
+
+// GetPathByName
+func (svc *FilesystemService) GetByNameOfParent(ctx context.Context, tenantID, userID, parentID uint64, name string) (*models.Filesystem, error) {
+	return svc.filesystemDao.GetByNameOfParent(ctx, tenantID, userID, parentID, name)
+}
+
+// CreateDir
+func (svc *FilesystemService) CreateDir(ctx context.Context, tenantID, userID uint64, path string) (*models.Filesystem, error) {
+	if path == "" {
+		return nil, errors.New("cant create empty path")
+	}
+
+	paths := lo.Filter(strings.Split(path, "/"), func(item string, _ int) bool {
+		return strings.TrimSpace(item) != ""
+	})
+
+	if len(paths) == 0 {
+		return nil, errors.New("path is empty after split by '/'")
+	}
+
+	parentID := uint64(0)
+	var lastModel *models.Filesystem
+	for _, dir := range paths {
+		fs, err := svc.GetByNameOfParent(ctx, tenantID, userID, parentID, dir)
+		if err == nil {
+			parentID = fs.ID
+			continue
+		}
+
+		if err != nil {
+			// vk
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				model := &models.Filesystem{
+					TenantID: tenantID,
+					UserID:   userID,
+					DriverID: 0,
+					Filename: dir,
+					Type:     0,
+					ParentID: parentID,
+					Status:   0,
+					Mime:     "",
+					Ext:      "",
+				}
+				if err := svc.CreateFromModel(ctx, model); err != nil {
+					return nil, err
+				}
+				lastModel = model
+				continue
+			}
+			return nil, err
+		}
+	}
+
+	return lastModel, nil
 }

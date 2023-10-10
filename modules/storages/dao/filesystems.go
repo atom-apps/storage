@@ -212,3 +212,12 @@ func (dao *FilesystemDao) GetByRealNames(ctx context.Context, realNames []string
 	query, table := dao.Context(ctx), dao.query.Filesystem
 	return query.Where(table.RealName.In(realNames...)).Find()
 }
+
+// GetByNameOfParent
+func (dao *FilesystemDao) GetByNameOfParent(ctx context.Context, tenantID, userID, parentID uint64, name string) (*models.Filesystem, error) {
+	query, table := dao.Context(ctx), dao.query.Filesystem
+	return query.Where(
+		table.ParentID.Eq(parentID),
+		table.Filename.Eq(name),
+	).First()
+}
