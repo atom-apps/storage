@@ -25,7 +25,7 @@ func (s *DriverSeeder) Run(faker *gofakeit.Faker, db *gorm.DB) {
 			Endpoint:     "https://localhost:9899/statics/",
 			AccessKey:    "--",
 			AccessSecret: "---",
-			Bucket:       "/Users/rogee/Develop/myself/atom-app/statics",
+			Bucket:       "/home/rogee/assets",
 			IsDefault:    true,
 		},
 		{
@@ -34,7 +34,7 @@ func (s *DriverSeeder) Run(faker *gofakeit.Faker, db *gorm.DB) {
 			Endpoint:     "https://localhost:9899/statics/",
 			AccessKey:    "--",
 			AccessSecret: "---",
-			Bucket:       "/Users/rogee/Develop/myself/atom-app/statics",
+			Bucket:       "/home/rogee/assets",
 		},
 	}
 	db.CreateInBatches(ms, 10)

@@ -118,11 +118,11 @@ func (svc *DriverService) GetHostFromDriver(ctx context.Context, driver *models.
 		if strings.HasPrefix(driver.Endpoint, "http") {
 			host = driver.Endpoint
 		} else {
-			host = fmt.Sprintf("//%s", driver.Endpoint)
+			host = fmt.Sprintf("//%s", strings.TrimLeft(driver.Endpoint, "/"))
 		}
 	default:
 		if strings.HasPrefix(driver.Endpoint, "http") {
-			host = fmt.Sprintf("//%s/%s", driver.Endpoint, driver.Bucket)
+			host = fmt.Sprintf("//%s/%s", strings.TrimLeft(driver.Endpoint, "/"), driver.Bucket)
 		} else {
 			host = fmt.Sprintf("%s/%s", driver.Endpoint, driver.Bucket)
 		}
