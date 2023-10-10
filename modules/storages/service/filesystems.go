@@ -281,7 +281,6 @@ func (svc *FilesystemService) CreateDir(ctx context.Context, tenantID, userID ui
 	}
 
 	parentID := uint64(0)
-	var lastModel *models.Filesystem
 	for _, dir := range paths {
 		fs, err := svc.GetByNameOfParent(ctx, tenantID, userID, parentID, dir)
 		if err == nil {
@@ -306,12 +305,11 @@ func (svc *FilesystemService) CreateDir(ctx context.Context, tenantID, userID ui
 				if err := svc.CreateFromModel(ctx, model); err != nil {
 					return nil, err
 				}
-				lastModel = model
 				continue
 			}
 			return nil, err
 		}
 	}
 
-	return lastModel, nil
+	return svc.GetByID(ctx, parentID)
 }
