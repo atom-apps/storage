@@ -1,3 +1,6 @@
+@host=http://localhost:9801/v1
+@token=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ0ZW5hbnRfaWQiOjEsInJvbGVfaWQiOjEsInJvbGUiOiJzdXBlcl9hZG1pbiIsImV4cCI6MTY5NzQ0MzcwNSwibmJmIjoxNjk2ODM4ODQ1fQ.EYS9-rFDB3y9DermojjXU-D6DpkpieUDt61Pg1FrrRE
+
 ###
 # 获取前端路由列表
 GET {{host}}/storages/filesystems
@@ -7,3 +10,32 @@ Authorization: {{token}}
 # Tree
 GET {{host}}/storages/filesystems/directories/tree
 Authorization: {{token}}
+
+###
+# get by names
+POST {{host}}/storages/filesystems/get-by-real-names
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+	"names": [
+        "1c3cfaf7-9e66-4811-ac9f-dbb441c75768",
+        "32dd1fdb-3a8b-4e2e-bb4f-38d9b4a8f000",
+        "fd93ccba-3b7b-45a8-8466-55ea4009863d",
+        "c0f2fde3-c6a1-439c-a158-3551fedc3fd4",
+        "f5f73e1c-8e5a-4269-8ff8-cc1ab8f89530",
+        "e67c3cfc-e4ce-45ed-909b-f7adb9d2cc38",
+        "db826dc8-91a2-48d0-b905-6714286769ee",
+        "d001a057-f7fc-452c-8ec6-627e419364a4",
+        "dedbfd2e-d124-43ed-b73b-6137e12002a9",
+        "856e3128-8193-45b3-b61b-42f4a3c4415b",
+        "d7e77722-d33d-4030-b8bc-91355f12c904",
+        "13813484-e7e4-4539-9a19-afcaa278ac01",
+        "0b96cc9d-d8eb-4e10-89b6-3f04b267bca8",
+        "c2b44a74-5b39-410b-89e5-09abdfe5bf80",
+        "15174190-8523-4bb6-a64a-4ffada6d34bb",
+        "8509a514-5880-442f-a06c-228b92a0a78f",
+        "f8cd1336-b8f6-432a-9aac-544e2a5a5a2f",
+        "32a1b99f-4418-444a-b4a0-505fe1c00f52"
+	]
+}

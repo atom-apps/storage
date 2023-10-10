@@ -15,14 +15,15 @@ import (
 )
 
 func routeFilesystemController(engine fiber.Router, controller *controller.FilesystemController) {
-	basePath := "/"+engine.(*fiber.Group).Prefix
-	engine.Get(strings.TrimPrefix("/v1/storages/filesystems/:id<int>", basePath), DataFunc1(controller.Show, Integer[uint64]("id", PathParamError)))
-	engine.Get(strings.TrimPrefix("/v1/storages/filesystems", basePath), DataFunc4(controller.List, JwtClaim[jwt.Claims](ClaimParamError), Query[dto.FilesystemListQueryFilter](QueryParamError), Query[common.PageQueryFilter](QueryParamError), Query[common.SortQueryFilter](QueryParamError)))
-	engine.Post(strings.TrimPrefix("/v1/storages/filesystems", basePath), Func1(controller.Create, Body[dto.FilesystemForm](BodyParamError)))
-	engine.Put(strings.TrimPrefix("/v1/storages/filesystems/:id<int>", basePath), Func2(controller.Update, Integer[uint64]("id", PathParamError), Body[dto.FilesystemForm](BodyParamError)))
-	engine.Delete(strings.TrimPrefix("/v1/storages/filesystems/:id<int>", basePath), Func1(controller.Delete, Integer[uint64]("id", PathParamError)))
-	engine.Post(strings.TrimPrefix("/v1/storages/filesystems/:id<int>/directory", basePath), Func3(controller.Directory, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError), Body[dto.CreateSubDirectoryForm](BodyParamError)))
-	engine.Get(strings.TrimPrefix("/v1/storages/filesystems/directories/tree", basePath), DataFunc1(controller.DirectoryTree, JwtClaim[jwt.Claims](ClaimParamError)))
-	engine.Post(strings.TrimPrefix("/v1/storages/filesystems/:id<int>/move", basePath), Func3(controller.MoveFiles, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError), Body[common.IDsForm](BodyParamError)))
-	engine.Post(strings.TrimPrefix("/v1/storages/filesystems/:id<int>/copy", basePath), Func3(controller.CopyFiles, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError), Body[common.IDsForm](BodyParamError)))
+	groupPrefix := "/"+strings.TrimLeft(engine.(*fiber.Group).Prefix,"/")
+	engine.Get(strings.TrimPrefix("/v1/storages/filesystems/:id<int>", groupPrefix), DataFunc1(controller.Show, Integer[uint64]("id", PathParamError)))
+	engine.Get(strings.TrimPrefix("/v1/storages/filesystems", groupPrefix), DataFunc4(controller.List, JwtClaim[jwt.Claims](ClaimParamError), Query[dto.FilesystemListQueryFilter](QueryParamError), Query[common.PageQueryFilter](QueryParamError), Query[common.SortQueryFilter](QueryParamError)))
+	engine.Post(strings.TrimPrefix("/v1/storages/filesystems", groupPrefix), Func1(controller.Create, Body[dto.FilesystemForm](BodyParamError)))
+	engine.Put(strings.TrimPrefix("/v1/storages/filesystems/:id<int>", groupPrefix), Func2(controller.Update, Integer[uint64]("id", PathParamError), Body[dto.FilesystemForm](BodyParamError)))
+	engine.Delete(strings.TrimPrefix("/v1/storages/filesystems/:id<int>", groupPrefix), Func1(controller.Delete, Integer[uint64]("id", PathParamError)))
+	engine.Post(strings.TrimPrefix("/v1/storages/filesystems/:id<int>/directory", groupPrefix), Func3(controller.Directory, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError), Body[dto.CreateSubDirectoryForm](BodyParamError)))
+	engine.Get(strings.TrimPrefix("/v1/storages/filesystems/directories/tree", groupPrefix), DataFunc1(controller.DirectoryTree, JwtClaim[jwt.Claims](ClaimParamError)))
+	engine.Post(strings.TrimPrefix("/v1/storages/filesystems/:id<int>/move", groupPrefix), Func3(controller.MoveFiles, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError), Body[common.IDsForm](BodyParamError)))
+	engine.Post(strings.TrimPrefix("/v1/storages/filesystems/:id<int>/copy", groupPrefix), Func3(controller.CopyFiles, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError), Body[common.IDsForm](BodyParamError)))
+	engine.Post(strings.TrimPrefix("/v1/storages/filesystems/get-by-real-names", groupPrefix), DataFunc2(controller.GetByRealNames, JwtClaim[jwt.Claims](ClaimParamError), Body[dto.RealNamesForm](BodyParamError)))
 }

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/atom-apps/storage/database/models"
+	"github.com/atom-apps/storage/modules/storages/dto"
 	"github.com/atom-apps/storage/modules/storages/service"
 	"github.com/atom-providers/jwt"
 	"github.com/atom-providers/log"
@@ -26,9 +27,9 @@ type UploadController struct {
 //	@Summary		Upload
 //	@Tags			Storage
 //	@Produce		json
-//	@Success		200	{object}	dto.UploadResponse
+//	@Success		200	{object}	dto.FilesystemItem
 //	@Router			/v1/storages/uploads/{id} [post]
-func (c *UploadController) Upload(ctx *fiber.Ctx, claim *jwt.Claims, id uint64) (*models.Filesystem, error) {
+func (c *UploadController) Upload(ctx *fiber.Ctx, claim *jwt.Claims, id uint64) (*dto.FilesystemItem, error) {
 	file, err := ctx.FormFile("file")
 	if err != nil {
 		return nil, err
@@ -78,5 +79,5 @@ func (c *UploadController) Upload(ctx *fiber.Ctx, claim *jwt.Claims, id uint64) 
 		return nil, err
 	}
 
-	return model, err
+	return c.fs.DecorateItem(model, 0), err
 }

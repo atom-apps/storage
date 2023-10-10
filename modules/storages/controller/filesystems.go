@@ -166,3 +166,21 @@ func (c *FilesystemController) MoveFiles(ctx *fiber.Ctx, claim *jwt.Claims, id u
 func (c *FilesystemController) CopyFiles(ctx *fiber.Ctx, claim *jwt.Claims, id uint64, body *common.IDsForm) error {
 	return c.filesystemSvc.CopyFiles(ctx.Context(), claim.TenantID, claim.UserID, id, body.ID)
 }
+
+// GetByRealNames
+// 这个接口是个匿名接口，如果使用ID获取会有被遍历的风险
+//
+//	@Summary		GetByRealNames
+//	@Tags			Storage
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{string}	FilesystemID
+//	@Router			/v1/storages/filesystems/get-by-real-names [post]
+func (c *FilesystemController) GetByRealNames(ctx *fiber.Ctx, claim *jwt.Claims, body *dto.RealNamesForm) ([]*dto.FilesystemItem, error) {
+	models, err := c.filesystemSvc.GetByRealNames(ctx.Context(), body.Names)
+	if err != nil {
+		return nil, err
+	}
+
+	return lo.Map(models, c.filesystemSvc.DecorateItem), nil
+}

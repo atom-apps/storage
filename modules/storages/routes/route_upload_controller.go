@@ -13,6 +13,6 @@ import (
 )
 
 func routeUploadController(engine fiber.Router, controller *controller.UploadController) {
-	basePath := "/"+engine.(*fiber.Group).Prefix
-	engine.Post(strings.TrimPrefix("/v1/storages/uploads/:id<int>", basePath), DataFunc2(controller.Upload, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError)))
+	groupPrefix := "/"+strings.TrimLeft(engine.(*fiber.Group).Prefix,"/")
+	engine.Post(strings.TrimPrefix("/v1/storages/uploads/:id<int>", groupPrefix), DataFunc2(controller.Upload, JwtClaim[jwt.Claims](ClaimParamError), Integer[uint64]("id", PathParamError)))
 }

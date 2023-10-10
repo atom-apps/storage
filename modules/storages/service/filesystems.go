@@ -255,3 +255,7 @@ func (svc *FilesystemService) CopyFiles(ctx context.Context, tenantID, userID, p
 
 	return svc.filesystemDao.CreateInBatch(ctx, ms)
 }
+
+func (svc *FilesystemService) GetByRealNames(ctx context.Context, names []string) ([]*models.Filesystem, error) {
+	return svc.filesystemDao.GetByRealNames(ctx, names)
+}

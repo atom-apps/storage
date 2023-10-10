@@ -206,3 +206,9 @@ func (dao *FilesystemDao) MoveFiles(ctx context.Context, tenantID, userID, paren
 	).Update(table.ParentID, parentID)
 	return err
 }
+
+// GetByRealNames
+func (dao *FilesystemDao) GetByRealNames(ctx context.Context, realNames []string) ([]*models.Filesystem, error) {
+	query, table := dao.Context(ctx), dao.query.Filesystem
+	return query.Where(table.RealName.In(realNames...)).Find()
+}

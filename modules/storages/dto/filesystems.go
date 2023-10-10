@@ -53,3 +53,7 @@ type FilesystemItem struct {
 type CreateSubDirectoryForm struct {
 	Name string `json:"name" form:"name"`
 }
+
+type RealNamesForm struct {
+	Names []string `json:"names" form:"names"`
+}
